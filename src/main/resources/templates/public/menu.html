@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public_layout :: html_head('Thực đơn')}"></head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{public_layout :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Banner Section -->
+        <section class="relative h-[35vh] flex items-center justify-center text-center text-white bg-cover bg-center" 
+                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1470&auto=format&fit=crop');">
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-amber-500 tracking-wider">THỰC ĐƠN CỦA QUÁN</h1>
+                <p class="text-stone-300 uppercase tracking-widest text-xs font-semibold">Tươi ngon - Tự nhiên - Đậm đà</p>
+                <div class="w-12 h-0.5 bg-amber-500 mx-auto mt-2"></div>
+            </div>
+        </section>
+
+        <!-- Menu Filter and List Section -->
+        <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <!-- Category Tags Filter & Search bar -->
+            <div class="flex flex-col md:flex-row gap-6 justify-between items-center bg-white p-6 rounded-2xl border border-stone-250/60 shadow-sm">
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-3 justify-center" id="category-filters">
+                    <button onclick="filterMenu('all')" class="category-btn active bg-amber-500 text-white font-semibold py-2 px-5 rounded-full text-sm shadow transition-all hover:scale-105">
+                        Tất cả
+                    </button>
+                    <!-- Iterate categories -->
+                    <button th:each="cat : ${categories}" 
+                            th:onclick="'filterMenu(' + ${cat.id} + ')'" 
+                            th:text="${cat.name}"
+                            class="category-btn bg-stone-100 text-stone-700 font-semibold py-2 px-5 rounded-full text-sm hover:bg-stone-200 transition-all hover:scale-105">
+                        Cà Phê & Trà
+                    </button>
+                </div>
+                
+                <!-- Search -->
+                <div class="relative w-full md:w-80">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                    <input type="text" id="menu-search" oninput="searchMenu()" placeholder="Tìm món nước, bánh ngọt..." 
+                           class="w-full bg-stone-50 border border-stone-200 rounded-full py-2.5 pl-10 pr-4 text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-sm">
+                </div>
+            </div>
+
+            <!-- Dynamic Menu Items Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-grid">
+                <!-- Item Card Loop -->
+                <div th:each="item : ${menuItems}" 
+                     th:data-category="${item.category.id}" 
+                     class="menu-item-card bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-md hover:translate-y-[-4px] transition-all duration-300">
+                    
+                    <!-- Item Image -->
+                    <div class="h-52 overflow-hidden bg-stone-100 relative">
+                        <img th:src="${item.imageUrl != null && item.imageUrl != '' && #strings.startsWith(item.imageUrl, 'http') ? item.imageUrl : 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=350'}" 
+                             th:alt="${item.name}" class="w-full h-full object-cover">
+                        <!-- Category Badge -->
+                        <span class="absolute top-4 left-4 bg-stone-900/80 backdrop-blur text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full border border-stone-800" 
+                              th:text="${item.category.name}">Cà phê</span>
+                    </div>
+
+                    <!-- Item Body -->
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-baseline">
+                                <h3 class="text-xl font-serif font-bold text-stone-900 menu-item-name" th:text="${item.name}">Strawberry Acai Coffee</h3>
+                                <span class="font-bold text-amber-600 text-lg flex-shrink-0" th:text="${#numbers.formatCurrency(item.price)}">$5.00</span>
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed font-normal line-clamp-3" th:text="${item.description}">
+                                Mô tả chi tiết về đồ uống thơm ngon và lành mạnh dành cho sức khỏe của quý khách.
+                            </p>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
+                            <span><i class="fa-solid fa-leaf text-green-600"></i> Nguyên liệu sạch</span>
+                            <span>Mã món: <strong class="font-mono text-stone-600" th:text="'M-' + ${item.id}">M-01</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="no-results-msg" class="hidden text-center py-20 space-y-3">
+                <i class="fa-solid fa-mug-hot text-5xl text-stone-300"></i>
+                <h4 class="text-lg font-serif font-bold text-stone-600">Không tìm thấy món ăn/nước uống phù hợp</h4>
+                <p class="text-xs text-stone-400">Vui lòng thử tìm kiếm bằng tên món khác hoặc đổi bộ lọc danh mục.</p>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{public_layout :: footer}"></div>
+
+    <!-- Frontend Filtering logic -->
+    <script>
+        let currentCategory = 'all';
+        let searchQuery = '';
+
+        function filterMenu(categoryId) {
+            currentCategory = categoryId;
+            
+            // Toggle active styles on buttons
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-amber-500', 'text-white', 'shadow');
+                btn.classList.add('bg-stone-100', 'text-stone-700');
+            });
+            
+            // Highlight selected button
+            const eventTarget = window.event ? window.event.currentTarget : null;
+            if (eventTarget) {
+                eventTarget.classList.add('active', 'bg-amber-500', 'text-white', 'shadow');
+                eventTarget.classList.remove('bg-stone-100', 'text-stone-700');
+            } else {
+                // Fallback for default "all" button
+                const allBtn = buttons[0];
+                allBtn.classList.add('active', 'bg-amber-500', 'text-white', 'shadow');
+                allBtn.classList.remove('bg-stone-100', 'text-stone-700');
+            }
+
+            applyFilters();
+        }
+
+        function searchMenu() {
+            const searchInput = document.getElementById('menu-search');
+            searchQuery = searchInput.value.toLowerCase().trim();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const items = document.querySelectorAll('.menu-item-card');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                const itemName = item.querySelector('.menu-item-name').textContent.toLowerCase();
+                
+                const matchesCategory = (currentCategory === 'all' || itemCategory === String(currentCategory));
+                const matchesSearch = (searchQuery === '' || itemName.includes(searchQuery));
+
+                if (matchesCategory && matchesSearch) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // Toggle empty state
+            const msg = document.getElementById('no-results-msg');
+            if (visibleCount === 0) {
+                msg.classList.remove('hidden');
+            } else {
+                msg.classList.add('hidden');
+            }
+        }
+    </script>
+
+</body>
+</html>

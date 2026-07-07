@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public_layout :: html_head('Tuyển dụng')}"></head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{public_layout :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Banner Section -->
+        <section class="relative h-[35vh] flex items-center justify-center text-center text-white bg-cover bg-center" 
+                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1470&auto=format&fit=crop');">
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-amber-500 tracking-wider">CƠ HỘI NGHỀ NGHIỆP</h1>
+                <p class="text-stone-300 uppercase tracking-widest text-xs font-semibold">Gia nhập đại gia đình Seven Coffee</p>
+                <div class="w-12 h-0.5 bg-amber-500 mx-auto mt-2"></div>
+            </div>
+        </section>
+
+        <!-- Recruitment Content -->
+        <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <!-- Left Side: Job Listing -->
+            <div class="lg:col-span-7 space-y-8">
+                <h2 class="text-3xl font-serif font-bold text-stone-900 border-b border-stone-200 pb-4">Vị Trí Đang Tuyển Dụng</h2>
+                
+                <!-- Job 1 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-4 hover:border-amber-500 transition-colors duration-300">
+                    <div class="flex justify-between items-start flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold text-stone-900">Nhân Viên Pha Chế (Barista)</h3>
+                            <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mt-1">Full-time / Part-time</p>
+                        </div>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Số lượng: 05</span>
+                    </div>
+                    <p class="text-xs text-stone-500 leading-relaxed">
+                        Chịu trách nhiệm pha chế các đồ uống trong thực đơn (cà phê pha máy, cà phê truyền thống, trà, sinh tố) theo đúng công thức chuẩn, đảm bảo vệ sinh an toàn thực phẩm tại quầy.
+                    </p>
+                    <div class="text-xs text-stone-600 space-y-1.5 pt-2">
+                        <p><strong>Yêu cầu:</strong> Có kinh nghiệm pha chế từ 6 tháng trở lên, trung thực, giao tiếp tốt, yêu thích ngành dịch vụ.</p>
+                        <p><strong>Quyền lợi:</strong> Mức lương hấp dẫn (22,000 - 28,000đ/giờ + Thưởng doanh số), hỗ trợ ăn ca, đóng bảo hiểm theo luật định.</p>
+                    </div>
+                    <button onclick="fillForm('Nhân Viên Pha Chế (Barista)')" class="btn-espresso px-4 py-2 text-[10px] uppercase font-bold tracking-wider inline-block">Ứng tuyển ngay</button>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-4 hover:border-amber-500 transition-colors duration-300">
+                    <div class="flex justify-between items-start flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold text-stone-900">Nhân Viên Thu Ngân (Cashier)</h3>
+                            <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mt-1">Part-time (Ca xoay)</p>
+                        </div>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Số lượng: 02</span>
+                    </div>
+                    <p class="text-xs text-stone-500 leading-relaxed">
+                        Chào đón khách hàng tại quầy POS, tiếp nhận order đồ uống, thực hiện thanh toán hóa đơn chính xác, hỗ trợ bàn giao hóa đơn/biên lai cho nhân viên phục vụ bàn.
+                    </p>
+                    <div class="text-xs text-stone-600 space-y-1.5 pt-2">
+                        <p><strong>Yêu cầu:</strong> Nhanh nhẹn, cẩn thận, biết sử dụng máy vi tính cơ bản, có kỹ năng giao tiếp tốt bằng tiếng Việt.</p>
+                        <p><strong>Quyền lợi:</strong> Lương 20,000 - 24,000đ/giờ + Thưởng KPIs, ca làm việc linh hoạt phù hợp sinh viên làm thêm.</p>
+                    </div>
+                    <button onclick="fillForm('Nhân Viên Thu Ngân (Cashier)')" class="btn-espresso px-4 py-2 text-[10px] uppercase font-bold tracking-wider inline-block">Ứng tuyển ngay</button>
+                </div>
+
+                <!-- Job 3 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-4 hover:border-amber-500 transition-colors duration-300">
+                    <div class="flex justify-between items-start flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-xl font-serif font-bold text-stone-900">Quản Lý Cửa Hàng (Store Manager)</h3>
+                            <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mt-1">Full-time</p>
+                        </div>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Số lượng: 01</span>
+                    </div>
+                    <p class="text-xs text-stone-500 leading-relaxed">
+                        Quản lý toàn bộ vận hành hàng ngày của chi nhánh (doanh thu, nhân viên, hàng tồn kho), đảm bảo chất lượng phục vụ đồng bộ và xử lý mọi khiếu nại phát sinh từ khách hàng.
+                    </p>
+                    <div class="text-xs text-stone-600 space-y-1.5 pt-2">
+                        <p><strong>Yêu cầu:</strong> Tối thiểu 2 năm kinh nghiệm quản lý nhà hàng/cafe lớn, tốt nghiệp Cao đẳng/Đại học ngành Quản trị, có kỹ năng lãnh đạo tốt.</p>
+                        <p><strong>Quyền lợi:</strong> Lương cứng 12 - 15 triệu/tháng + Thưởng doanh thu chi nhánh cực cao, bảo hiểm đóng full lương.</p>
+                    </div>
+                    <button onclick="fillForm('Quản Lý Cửa Hàng (Store Manager)')" class="btn-espresso px-4 py-2 text-[10px] uppercase font-bold tracking-wider inline-block">Ứng tuyển ngay</button>
+                </div>
+            </div>
+
+            <!-- Right Side: Application Form -->
+            <div class="lg:col-span-5">
+                <div class="bg-stone-900 text-white p-8 rounded-2xl border border-stone-800 shadow-xl sticky top-28 space-y-6">
+                    <div class="text-center">
+                        <h2 class="text-2xl font-serif font-bold text-amber-500">Nộp Hồ Sơ Trực Tuyến</h2>
+                        <p class="text-[11px] text-stone-400 mt-1 uppercase tracking-wider">Hoàn tất biểu mẫu ứng tuyển nhanh dưới đây</p>
+                    </div>
+
+                    <form id="recruitment-form" onsubmit="handleApply(event)" class="space-y-4 text-stone-800">
+                        <div>
+                            <label for="fullName" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Họ và tên *</label>
+                            <input type="text" id="fullName" required placeholder="Nguyễn Văn A" 
+                                   class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white placeholder-stone-600 focus:outline-none focus:border-amber-500 text-xs">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="phone" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Số điện thoại *</label>
+                                <input type="tel" id="phone" required placeholder="0901234567" 
+                                       class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white placeholder-stone-600 focus:outline-none focus:border-amber-500 text-xs">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Email *</label>
+                                <input type="email" id="email" required placeholder="abc@gmail.com" 
+                                       class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white placeholder-stone-600 focus:outline-none focus:border-amber-500 text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="position" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Vị trí ứng tuyển *</label>
+                            <select id="position" required 
+                                    class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white focus:outline-none focus:border-amber-500 text-xs">
+                                <option value="" disabled selected>Chọn vị trí ứng tuyển...</option>
+                                <option value="Nhân Viên Pha Chế (Barista)">Nhân Viên Pha Chế (Barista)</option>
+                                <option value="Nhân Viên Thu Ngân (Cashier)">Nhân Viên Thu Ngân (Cashier)</option>
+                                <option value="Quản Lý Cửa Hàng (Store Manager)">Quản Lý Cửa Hàng (Store Manager)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="cv" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Link CV của bạn (Drive/DropBox) *</label>
+                            <input type="url" id="cv" required placeholder="https://drive.google.com/..." 
+                                   class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white placeholder-stone-600 focus:outline-none focus:border-amber-500 text-xs">
+                        </div>
+
+                        <div>
+                            <label for="coverLetter" class="block text-xs font-semibold text-stone-300 uppercase mb-1.5">Lời giới thiệu bản thân</label>
+                            <textarea id="coverLetter" rows="4" placeholder="Giới thiệu sơ qua kinh nghiệm và nguyện vọng..." 
+                                      class="w-full bg-stone-950 border border-stone-800 rounded-lg py-2.5 px-3.5 text-white placeholder-stone-600 focus:outline-none focus:border-amber-500 text-xs resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-verona w-full py-3 mt-2 flex items-center justify-center gap-2 text-xs uppercase tracking-wider font-bold">
+                            Nộp hồ sơ ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Alert Popup -->
+        <div id="apply-success-modal" class="fixed inset-0 bg-stone-950/70 z-50 hidden backdrop-blur flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-sm w-full p-8 text-center space-y-4 shadow-2xl relative">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-xl font-serif font-bold text-stone-900">Nộp Hồ Sơ Thành Công!</h3>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                    Cảm ơn bạn đã quan tâm ứng tuyển tại Seven Coffee. Bộ phận Nhân sự (HR) sẽ liên hệ với bạn qua số điện thoại hoặc email trong vòng 2-3 ngày làm việc.
+                </p>
+                <button onclick="closeSuccessModal()" class="btn-verona w-full py-2.5 text-xs uppercase tracking-wider font-bold">Đóng lại</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{public_layout :: footer}"></div>
+
+    <script>
+        function fillForm(positionName) {
+            const select = document.getElementById('position');
+            select.value = positionName;
+            
+            // Scroll smoothly to form
+            document.getElementById('recruitment-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleApply(e) {
+            e.preventDefault();
+            // Show success popup
+            document.getElementById('apply-success-modal').classList.remove('hidden');
+            // Reset form
+            document.getElementById('recruitment-form').reset();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('apply-success-modal').classList.add('hidden');
+        }
+    </script>
+
+</body>
+</html>

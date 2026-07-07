@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public_layout :: html_head('Dịch vụ')}"></head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{public_layout :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Banner Section -->
+        <section class="relative h-[35vh] flex items-center justify-center text-center text-white bg-cover bg-center" 
+                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1470&auto=format&fit=crop');">
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-amber-500 tracking-wider">DỊCH VỤ CỦA CHÚNG TÔI</h1>
+                <p class="text-stone-300 uppercase tracking-widest text-xs font-semibold">Mang lại giá trị nhiều hơn một tách cà phê</p>
+                <div class="w-12 h-0.5 bg-amber-500 mx-auto mt-2"></div>
+            </div>
+        </section>
+
+        <!-- Services list -->
+        <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+            <!-- Service 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl shadow">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <h2 class="text-3xl font-serif font-bold text-stone-900">Tổ Chức Sự Kiện & Hội Thảo</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Bạn cần một không gian ấm cúng, sang trọng và đầy cảm hứng để tổ chức các buổi offline câu lạc bộ, họp báo ra mắt sản phẩm, sinh nhật hay cuộc họp nội bộ doanh nghiệp? Seven Coffee cung cấp dịch vụ đặt chỗ nguyên khu vực hoặc trọn gói quán với đầy đủ trang thiết bị âm thanh, máy chiếu sắc nét, wifi tốc độ cao.
+                    </p>
+                    <p class="text-stone-600 leading-relaxed">
+                        Đi kèm thực đơn đồ uống tự chọn và bánh ngọt phục vụ teabreak tinh tế bởi đội ngũ nhân viên chuyên nghiệp.
+                    </p>
+                    <a th:href="@{/contact}" class="btn-verona px-6 py-2.5 text-xs uppercase tracking-wider font-semibold inline-block">Đăng ký dịch vụ</a>
+                </div>
+                <div class="lg:col-span-6 rounded-2xl overflow-hidden shadow-lg h-80">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Tổ chức sự kiện" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <div class="lg:col-span-6 lg:order-2 space-y-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl shadow">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="text-3xl font-serif font-bold text-stone-900">Workshop Pha Chế Cuối Tuần</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Dành riêng cho những tín đồ yêu thích pha chế và muốn tự tay làm nên ly nước hoàn hảo. Đến với workshop định kỳ của chúng tôi, bạn sẽ được hướng dẫn trực tiếp từ barista chuyên nghiệp về nghệ thuật tạo hình bọt sữa (Latte Art) hay kỹ thuật ủ cà phê bằng phương pháp thủ công (V60, Chemex, Syphon).
+                    </p>
+                    <p class="text-stone-600 leading-relaxed">
+                        Đây là sân chơi thư giãn bổ ích để bạn giao lưu, chia sẻ niềm đam mê hạt cà phê mộc và rinh về những phần quà xinh xắn từ Seven Coffee.
+                    </p>
+                    <a th:href="@{/contact}" class="btn-verona px-6 py-2.5 text-xs uppercase tracking-wider font-semibold inline-block">Xem lịch học</a>
+                </div>
+                <div class="lg:col-span-6 lg:order-1 rounded-2xl overflow-hidden shadow-lg h-80">
+                    <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Workshop pha chế" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl shadow">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <h2 class="text-3xl font-serif font-bold text-stone-900">Dịch Vụ Tiệc Trà & Coffee Catering</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Seven Coffee đồng hành cùng các sự kiện lớn của công ty bạn bằng quầy bar di động hiện đại. Chúng tôi cung cấp các gói catering trà bánh đa dạng, setup trọn gói từ ly tách, bàn tiệc hoa tươi, đến nhân viên pha chế phục vụ trực tiếp tại văn phòng hoặc hội trường của bạn.
+                    </p>
+                    <p class="text-stone-600 leading-relaxed">
+                        Cam kết mang lại chuẩn hương vị cao cấp nhất từ cửa hàng đến tận nơi tổ chức hội nghị của quý khách.
+                    </p>
+                    <a th:href="@{/contact}" class="btn-verona px-6 py-2.5 text-xs uppercase tracking-wider font-semibold inline-block">Nhận báo giá ngay</a>
+                </div>
+                <div class="lg:col-span-6 rounded-2xl overflow-hidden shadow-lg h-80">
+                    <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Catering tiệc trà" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <div class="lg:col-span-6 lg:order-2 space-y-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl shadow">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h2 class="text-3xl font-serif font-bold text-stone-900">Giao Hàng Hỏa Tốc Nóng Hổi</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Thèm cà phê nhưng ngại ra đường? Chỉ cần nhấc máy gọi hotline hoặc order, chúng tôi sẽ lập tức pha chế và đóng gói chuyên dụng giữ nhiệt để đồ uống của bạn luôn nóng hổi hay mát lạnh khi đến tay. 
+                    </p>
+                    <p class="text-stone-600 leading-relaxed">
+                        Miễn phí giao hàng trong bán kính 3km từ các chi nhánh và tích lũy điểm thưởng thành viên cực nhiều ưu đãi.
+                    </p>
+                    <a th:href="@{/contact}" class="btn-espresso px-6 py-2.5 text-xs uppercase tracking-wider font-semibold inline-block">Gọi đặt hàng ngay</a>
+                </div>
+                <div class="lg:col-span-6 lg:order-1 rounded-2xl overflow-hidden shadow-lg h-80">
+                    <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Giao hàng" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{public_layout :: footer}"></div>
+
+</body>
+</html>

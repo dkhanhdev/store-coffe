@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public_layout :: html_head('Tin tức & Khuyến mãi')}"></head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{public_layout :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Banner Section -->
+        <section class="relative h-[35vh] flex items-center justify-center text-center text-white bg-cover bg-center" 
+                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1468&auto=format&fit=crop');">
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-amber-500 tracking-wider">TIN TỨC & KHUYẾN MÃI</h1>
+                <p class="text-stone-300 uppercase tracking-widest text-xs font-semibold">Cập nhật tin mới nhất từ Seven Coffee</p>
+                <div class="w-12 h-0.5 bg-amber-500 mx-auto mt-2"></div>
+            </div>
+        </section>
+
+        <!-- Blog Grid -->
+        <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <!-- Category filters -->
+            <div class="flex justify-center gap-4 border-b border-stone-200 pb-6">
+                <button onclick="filterNews('all')" class="news-tab-btn active text-amber-600 border-b-2 border-amber-500 font-bold px-4 py-2 text-sm transition-all">
+                    Tất cả
+                </button>
+                <button onclick="filterNews('promo')" class="news-tab-btn text-stone-500 hover:text-amber-500 font-semibold px-4 py-2 text-sm transition-all">
+                    Khuyến mãi
+                </button>
+                <button onclick="filterNews('knowledge')" class="news-tab-btn text-stone-500 hover:text-amber-500 font-semibold px-4 py-2 text-sm transition-all">
+                    Kiến thức cà phê
+                </button>
+            </div>
+
+            <!-- News Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Blog 1 -->
+                <article class="news-card bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col h-full group" data-category="promo">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop" 
+                             alt="Khuyến mãi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 bg-amber-500 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow">Khuyến mãi</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <span class="text-xs text-stone-400"><i class="fa-regular fa-calendar mr-1.5"></i>07 Tháng 7, 2026</span>
+                            <h3 class="text-xl font-serif font-bold text-stone-900 group-hover:text-amber-600 transition-colors">Mừng Khai Trương Chi Nhánh Hà Nội - Giảm 20% Toàn Bộ Thực Đơn</h3>
+                            <p class="text-stone-500 text-xs leading-relaxed line-clamp-3">
+                                Để đánh dấu cột mốc chi nhánh thứ 3 đi vào hoạt động tại Hà Nội, Seven Coffee gửi tặng quý khách hàng chương trình ưu đãi đặc biệt: giảm ngay 20% hóa đơn đồ uống và bánh ngọt từ ngày 10/07 đến hết 15/07.
+                            </p>
+                        </div>
+                        <button onclick="openModal('modal-1')" class="text-amber-600 hover:text-amber-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 self-start pt-2">
+                            Đọc chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog 2 -->
+                <article class="news-card bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col h-full group" data-category="knowledge">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600&auto=format&fit=crop" 
+                             alt="Latte art" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 bg-emerald-600 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow">Kiến thức</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <span class="text-xs text-stone-400"><i class="fa-regular fa-calendar mr-1.5"></i>05 Tháng 7, 2026</span>
+                            <h3 class="text-xl font-serif font-bold text-stone-900 group-hover:text-amber-600 transition-colors">Nghệ Thuật Latte Art: Câu Chuyện Phía Sau Những Bọt Sữa Mịn Màng</h3>
+                            <p class="text-stone-500 text-xs leading-relaxed line-clamp-3">
+                                Tạo hình trái tim, lá dương xỉ hay bông hồng xinh đẹp trên tách Latte không chỉ đòi hỏi sự khéo léo mà còn là sự am hiểu sâu sắc về nhiệt độ đánh sữa tươi đạt chuẩn 60-65 độ C.
+                            </p>
+                        </div>
+                        <button onclick="openModal('modal-2')" class="text-amber-600 hover:text-amber-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 self-start pt-2">
+                            Đọc chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog 3 -->
+                <article class="news-card bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col h-full group" data-category="knowledge">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?q=80&w=600&auto=format&fit=crop" 
+                             alt="Coffee beans" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 bg-emerald-600 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow">Kiến thức</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <span class="text-xs text-stone-400"><i class="fa-regular fa-calendar mr-1.5"></i>28 Tháng 6, 2026</span>
+                            <h3 class="text-xl font-serif font-bold text-stone-900 group-hover:text-amber-600 transition-colors">Bí Mật Đằng Sau Sự Khác Biệt Giữa Hạt Cà Phê Arabica và Robusta</h3>
+                            <p class="text-stone-500 text-xs leading-relaxed line-clamp-3">
+                                Tại sao Robusta mang hương vị đậm đà đắng nồng đậm chất truyền thống Việt Nam trong khi Arabica lại đem tới vị chua nhẹ của trái cây mọng thanh lịch? Hãy cùng chúng tôi so sánh cấu trúc hóa học và cách thưởng thức.
+                            </p>
+                        </div>
+                        <button onclick="openModal('modal-3')" class="text-amber-600 hover:text-amber-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 self-start pt-2">
+                            Đọc chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Interactive Article Modals -->
+        <!-- Modal 1 -->
+        <div id="modal-1" class="fixed inset-0 bg-stone-950/70 z-50 hidden backdrop-blur flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-2xl w-full p-8 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+                <button onclick="closeModal('modal-1')" class="absolute top-6 right-6 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <span class="text-xs text-amber-600 font-bold uppercase tracking-wider">Khuyến mãi đặc biệt</span>
+                <h3 class="text-2xl font-serif font-bold text-stone-900 pr-8">Mừng Khai Trương Chi Nhánh Hà Nội - Giảm 20% Toàn Bộ Thực Đơn</h3>
+                <p class="text-stone-400 text-xs border-b border-stone-150 pb-4"><i class="fa-regular fa-calendar mr-1.5"></i>07 Tháng 7, 2026 - Biên tập viên Seven Coffee</p>
+                <div class="space-y-3 text-sm text-stone-600 leading-relaxed pt-2">
+                    <p>Seven Coffee chính thức mở cửa chi nhánh thứ 3 tại số <strong>425 Cầu Giấy, Quận Cầu Giấy, Hà Nội</strong>. Đây là dự án ấp ủ lâu dài của đội ngũ chúng tôi với mong muốn mang phong cách phục vụ chu đáo cùng hạt cà phê rang mộc chuẩn gu đến thực khách thủ đô.</p>
+                    <p>Nhân tuần lễ khai trương, chúng tôi áp dụng chương trình ưu đãi lớn:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Giảm giá trực tiếp 20%</strong> trên tổng hóa đơn mua tại cửa hàng (không giới hạn giá trị tối đa).</li>
+                        <li>Tặng ngay <strong>100 chiếc túi vải Canvas phiên bản giới hạn</strong> cho 100 khách hàng đầu tiên check-in trong ngày 10/07.</li>
+                        <li>Chương trình mua 2 tặng 1 dành cho nhóm khách đi đông người mua menu trà & cà phê.</li>
+                    </ul>
+                    <p>Kính mời quý khách hàng ghé thăm cửa hàng mới để tận hưởng không gian ngập tràn cây xanh và thưởng thức ly espresso nguyên bản nhé!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 2 -->
+        <div id="modal-2" class="fixed inset-0 bg-stone-950/70 z-50 hidden backdrop-blur flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-2xl w-full p-8 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+                <button onclick="closeModal('modal-2')" class="absolute top-6 right-6 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <span class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Kiến thức chuyên môn</span>
+                <h3 class="text-2xl font-serif font-bold text-stone-900 pr-8">Nghệ Thuật Latte Art: Câu Chuyện Phía Sau Những Bọt Sữa Mịn Màng</h3>
+                <p class="text-stone-400 text-xs border-b border-stone-150 pb-4"><i class="fa-regular fa-calendar mr-1.5"></i>05 Tháng 7, 2026 - Viết bởi Barista Trainer Hoàng Mai</p>
+                <div class="space-y-3 text-sm text-stone-600 leading-relaxed pt-2">
+                    <p>Latte Art không chỉ là vẽ trang trí, đó là sự cân bằng hoàn hảo giữa hóa học và đôi bàn tay khéo léo của người pha chế.</p>
+                    <p>Quy trình tạo hình được thực hiện qua các bước nghiêm ngặt:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Đánh bọt sữa (Steaming):</strong> Sữa tươi thanh trùng được đưa vào vòi hơi áp suất cao để luồng khí nóng tạo thành lớp bọt siêu mịn (microfoam) bóng sáng. Nhiệt độ lý tưởng là 60 - 65 độ C. Vượt quá nhiệt độ này, các protein trong sữa bị phá hủy làm sữa mất độ ngọt tự nhiên.</li>
+                        <li><strong>Chiết xuất Espresso:</strong> Ly cà phê nền phải có lớp crema dày mịn màu nâu đỏ cánh gián để tạo độ tương phản tốt với bọt sữa trắng.</li>
+                        <li><strong>Đổ sữa nghệ thuật (Pouring):</strong> Barista nghiêng ly cà phê, rót sữa đều tay từ trên cao để sữa đi sâu xuống dưới lớp crema, sau đó hạ thấp ca sữa sát miệng ly kết hợp lắc cổ tay để vẽ hình.</li>
+                    </ol>
+                    <p>Ghé Seven Coffee vào cuối tuần, bạn sẽ được tận mắt chứng kiến màn biểu diễn điêu luyện của các Barista tài hoa nhé.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 3 -->
+        <div id="modal-3" class="fixed inset-0 bg-stone-950/70 z-50 hidden backdrop-blur flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-2xl w-full p-8 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+                <button onclick="closeModal('modal-3')" class="absolute top-6 right-6 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <span class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Kiến thức cơ bản</span>
+                <h3 class="text-2xl font-serif font-bold text-stone-900 pr-8">Bí Mật Đằng Sau Sự Khác Biệt Giữa Hạt Cà Phê Arabica và Robusta</h3>
+                <p class="text-stone-400 text-xs border-b border-stone-150 pb-4"><i class="fa-regular fa-calendar mr-1.5"></i>28 Tháng 6, 2026 - Viết bởi Founder Quốc Nam</p>
+                <div class="space-y-3 text-sm text-stone-600 leading-relaxed pt-2">
+                    <p>Dành cho những ai mê mẩn thứ hạt nâu thần kỳ này, hãy cùng Seven Coffee làm rõ sự khác biệt thú vị giữa hai dòng hạt phổ biến nhất:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Arabica (Cà phê chè):</strong> Trồng ở độ cao trên 1500m (như Cầu Đất, Đà Lạt). Hàm lượng caffeine thấp (1-2%). Vị chua thanh tự nhiên xen lẫn vị đắng nhẹ và hậu vị ngọt thơm của hoa quả ngọt ngào.</li>
+                        <li><strong>Robusta (Cà phê vối):</strong> Trồng ở vùng cao nguyên thấp hơn (như Buôn Ma Thuột, Đắk Lắk). Lượng caffeine cao gần gấp đôi Arabica (2-4%). Vị đắng đậm đà mộc mạc, hương thơm nồng nàn sảng khoái và cực kỳ hợp gu cà phê sữa đá truyền thống Việt Nam.</li>
+                    </ul>
+                    <p>Tại Seven Coffee, chúng tôi có dòng sản phẩm <strong>Signature Blend</strong> pha trộn tỷ lệ hoàn hảo 70% Robusta & 30% Arabica đem lại trải nghiệm cân bằng tuyệt hảo - vừa đắng đậm đà vừa thơm ngọt hậu tinh tế.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{public_layout :: footer}"></div>
+
+    <!-- Modal script -->
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Lock scrolling
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Unlock scrolling
+        }
+
+        function filterNews(category) {
+            const cards = document.querySelectorAll('.news-card');
+            
+            // Toggle active style on tab buttons
+            const tabButtons = document.querySelectorAll('.news-tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('text-amber-600', 'border-b-2', 'border-amber-500', 'font-bold');
+                btn.classList.add('text-stone-500', 'font-semibold');
+            });
+            
+            // Highlight selected tab button
+            const eventTarget = window.event ? window.event.currentTarget : null;
+            if (eventTarget) {
+                eventTarget.classList.add('text-amber-600', 'border-b-2', 'border-amber-500', 'font-bold');
+                eventTarget.classList.remove('text-stone-500', 'font-semibold');
+            }
+
+            // Filter items
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

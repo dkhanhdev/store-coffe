@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="html_head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - Seven Coffee'"></title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Verona Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/verona.css}">
+    <style>
+        .nav-active {
+            color: #d96b27 !important;
+            border-bottom: 2px solid #d96b27;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header Fragment -->
+    <header th:fragment="header" class="bg-stone-950/95 backdrop-blur border-b border-stone-800 text-white sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Navigation Left -->
+                <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold tracking-wider uppercase">
+                    <a th:href="@{/}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                       th:classappend="${activePage == 'home' ? 'nav-active' : ''}">Trang chủ</a>
+                    <a th:href="@{/about}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                       th:classappend="${activePage == 'about' ? 'nav-active' : ''}">Giới thiệu</a>
+                    <a th:href="@{/menu}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                       th:classappend="${activePage == 'menu' ? 'nav-active' : ''}">Thực đơn</a>
+                    <a th:href="@{/services}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                       th:classappend="${activePage == 'services' ? 'nav-active' : ''}">Dịch vụ</a>
+                </nav>
+
+                <!-- Logo Middle -->
+                <div class="flex-shrink-0 flex flex-col items-center">
+                    <a th:href="@{/}" class="flex flex-col items-center gap-1">
+                        <div class="w-11 h-11 rounded-full border border-dashed border-amber-500 bg-stone-900 flex items-center justify-center font-bold text-lg text-amber-500 font-serif shadow-lg">
+                            7
+                        </div>
+                        <span class="text-sm font-serif font-bold text-amber-500 tracking-widest uppercase m-0 leading-none">Seven Coffee</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Right -->
+                <div class="flex items-center gap-4 lg:gap-8">
+                    <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold tracking-wider uppercase">
+                        <a th:href="@{/news}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                           th:classappend="${activePage == 'news' ? 'nav-active' : ''}">Tin tức</a>
+                        <a th:href="@{/recruitment}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                           th:classappend="${activePage == 'recruitment' ? 'nav-active' : ''}">Tuyển dụng</a>
+                        <a th:href="@{/contact}" class="text-stone-300 hover:text-amber-500 transition-colors py-2"
+                           th:classappend="${activePage == 'contact' ? 'nav-active' : ''}">Liên hệ</a>
+                    </nav>
+
+                    <!-- Authentication Action -->
+                    <div class="border-l border-stone-800 pl-4 lg:pl-6 flex items-center">
+                        <!-- Guest -->
+                        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn-espresso py-1.5 px-3 text-xs uppercase tracking-wider font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                            <i class="fa-solid fa-user-lock text-[10px]"></i> Đăng nhập
+                        </a>
+                        <!-- Authenticated -->
+                        <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+                            <a th:href="@{/dashboard}" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shadow">
+                                <i class="fa-solid fa-chart-line text-[10px]"></i> Quản trị
+                            </a>
+                            <a th:href="@{/logout}" class="text-stone-400 hover:text-white text-xs uppercase tracking-wider font-semibold transition-all" title="Đăng xuất">
+                                <i class="fa-solid fa-power-off text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button type="button" onclick="toggleMobileMenu()" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-white hover:bg-stone-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl" id="mobile-menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div class="hidden md:hidden bg-stone-900 border-b border-stone-800" id="mobile-menu">
+            <div class="px-2 pt-2 pb-4 space-y-1">
+                <a th:href="@{/}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'home' ? 'text-amber-500 bg-stone-850' : ''}">Trang chủ</a>
+                <a th:href="@{/about}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'about' ? 'text-amber-500 bg-stone-850' : ''}">Giới thiệu</a>
+                <a th:href="@{/menu}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'menu' ? 'text-amber-500 bg-stone-850' : ''}">Thực đơn</a>
+                <a th:href="@{/services}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'services' ? 'text-amber-500 bg-stone-850' : ''}">Dịch vụ</a>
+                <a th:href="@{/news}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'news' ? 'text-amber-500 bg-stone-850' : ''}">Tin tức</a>
+                <a th:href="@{/recruitment}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'recruitment' ? 'text-amber-500 bg-stone-850' : ''}">Tuyển dụng</a>
+                <a th:href="@{/contact}" class="block px-3 py-2.5 rounded-md text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-amber-500" th:classappend="${activePage == 'contact' ? 'text-amber-500 bg-stone-850' : ''}">Liên hệ</a>
+            </div>
+        </div>
+
+        <script>
+            function toggleMobileMenu() {
+                var menu = document.getElementById("mobile-menu");
+                var icon = document.getElementById("mobile-menu-icon");
+                if (menu.classList.contains("hidden")) {
+                    menu.classList.remove("hidden");
+                    icon.classList.remove("fa-bars");
+                    icon.classList.add("fa-xmark");
+                } else {
+                    menu.classList.add("hidden");
+                    icon.classList.remove("fa-xmark");
+                    icon.classList.add("fa-bars");
+                }
+            }
+        </script>
+    </header>
+
+    <!-- Content Area (will be injected by content templates) -->
+    <main class="flex-grow">
+        <!-- Body content goes here -->
+    </main>
+
+    <!-- Footer Fragment -->
+    <footer th:fragment="footer" class="bg-stone-950 text-stone-400 border-t border-stone-800 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Info Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-full border border-dashed border-amber-500 bg-stone-900 flex items-center justify-center font-bold text-amber-500 font-serif shadow-lg">7</div>
+                        <span class="text-lg font-serif font-bold text-white tracking-widest uppercase">Seven Coffee</span>
+                    </div>
+                    <p class="text-sm leading-relaxed text-stone-400">
+                        Nơi hội tụ những hạt cà phê rang xay thượng hạng, mang lại trải nghiệm đỉnh cao và không gian khơi nguồn sáng tạo.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="https://facebook.com" target="_blank" class="w-8 h-8 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-400 hover:text-white hover:border-amber-500 hover:bg-amber-500 transition-all">
+                            <i class="fa-brands fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" class="w-8 h-8 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-400 hover:text-white hover:border-amber-500 hover:bg-amber-500 transition-all">
+                            <i class="fa-brands fa-x-twitter text-sm"></i>
+                        </a>
+                        <a href="https://pinterest.com" target="_blank" class="w-8 h-8 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-400 hover:text-white hover:border-amber-500 hover:bg-amber-500 transition-all">
+                            <i class="fa-brands fa-pinterest-p text-sm"></i>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" class="w-8 h-8 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-400 hover:text-white hover:border-amber-500 hover:bg-amber-500 transition-all">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h3 class="text-white font-serif font-semibold tracking-wider text-md mb-6 uppercase border-l-2 border-amber-500 pl-3">Đường dẫn nhanh</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a th:href="@{/}" class="hover:text-amber-500 transition-colors">Trang chủ</a></li>
+                        <li><a th:href="@{/about}" class="hover:text-amber-500 transition-colors">Giới thiệu</a></li>
+                        <li><a th:href="@{/menu}" class="hover:text-amber-500 transition-colors">Thực đơn</a></li>
+                        <li><a th:href="@{/services}" class="hover:text-amber-500 transition-colors">Dịch vụ khác</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h3 class="text-white font-serif font-semibold tracking-wider text-md mb-6 uppercase border-l-2 border-amber-500 pl-3">Thông tin thêm</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a th:href="@{/news}" class="hover:text-amber-500 transition-colors">Tin tức khuyến mãi</a></li>
+                        <li><a th:href="@{/recruitment}" class="hover:text-amber-500 transition-colors">Cơ hội tuyển dụng</a></li>
+                        <li><a th:href="@{/contact}" class="hover:text-amber-500 transition-colors">Liên hệ góp ý</a></li>
+                        <li><a th:href="@{/login}" class="hover:text-amber-500 transition-colors">Cổng đăng nhập nội bộ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Details -->
+                <div>
+                    <h3 class="text-white font-serif font-semibold tracking-wider text-md mb-6 uppercase border-l-2 border-amber-500 pl-3">Liên hệ</h3>
+                    <ul class="space-y-4 text-sm text-stone-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-amber-500"></i>
+                            <span>421 Nguyễn Huệ, Quận 1, Thành phố Hồ Chí Minh, Việt Nam</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-amber-500"></i>
+                            <span>+84 28 3824 1234</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-amber-500"></i>
+                            <span>contact@sevencoffee.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copy Rights -->
+            <div class="border-t border-stone-900 pt-8 text-center text-xs text-stone-600 flex flex-col sm:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+                <p>&copy; 2026 Seven Coffee. Tất cả quyền được bảo lưu.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-stone-400 transition-colors">Điều khoản sử dụng</a>
+                    <a href="#" class="hover:text-stone-400 transition-colors">Chính sách bảo mật</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

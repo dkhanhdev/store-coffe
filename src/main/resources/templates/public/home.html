@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public_layout :: html_head('Trang chủ')}"></head>
+<body class="bg-stone-50 text-stone-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{public_layout :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="relative h-[85vh] flex items-center justify-center text-center text-white bg-cover bg-center" 
+                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1956&auto=format&fit=crop');">
+            <div class="max-w-4xl mx-auto px-4 space-y-6">
+                <h1 class="text-5xl md:text-7xl font-serif font-bold text-amber-500 tracking-wider">SEVEN COFFEE</h1>
+                <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-stone-200">Amazing Coffee Happens Here</p>
+                <p class="text-sm md:text-md text-stone-300 max-w-xl mx-auto leading-relaxed">
+                    Khám phá không gian ngập tràn hương vị của những hạt cà phê hảo hạng được chọn lọc và rang xay thủ công bởi các chuyên gia.
+                </p>
+                <div class="pt-6 flex flex-wrap justify-center gap-4">
+                    <a th:href="@{/menu}" class="btn-verona px-8 py-3.5 text-sm uppercase tracking-wider font-semibold shadow-lg">Xem thực đơn</a>
+                    <a th:href="@{/contact}" class="btn-espresso px-8 py-3.5 text-sm uppercase tracking-wider font-semibold shadow-lg bg-stone-900/60 backdrop-blur">Xem địa điểm</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <!-- Left: Images Layout -->
+                <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <img src="https://images.unsplash.com/photo-1570968915860-54d5c301fc9f?q=80&w=600&auto=format&fit=crop" 
+                             alt="Latte Art" class="rounded-2xl shadow-md w-full object-cover h-48 hover:scale-[1.02] transition-transform duration-300">
+                        <img src="https://images.unsplash.com/photo-1607958996333-41aef7caefaa?q=80&w=600&auto=format&fit=crop" 
+                             alt="Brownie Cake" class="rounded-2xl shadow-md w-full object-cover h-64 hover:scale-[1.02] transition-transform duration-300">
+                    </div>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600&auto=format&fit=crop" 
+                             alt="Lady drinking coffee" class="rounded-2xl shadow-lg w-full object-cover h-96 hover:scale-[1.02] transition-transform duration-300">
+                    </div>
+                </div>
+                <!-- Right: Text Description -->
+                <div class="lg:col-span-6 space-y-6">
+                    <h2 class="text-sm font-semibold tracking-widest text-amber-600 uppercase">Khám Phá Câu Chuyện</h2>
+                    <h3 class="text-4xl md:text-5xl font-serif font-bold text-stone-900 leading-tight">Về Quán Cà Phê Của Chúng Tôi</h3>
+                    <p class="text-stone-600 leading-relaxed text-md">
+                        Tại Seven Coffee, chúng tôi coi mỗi hạt cà phê là một tác phẩm nghệ thuật. Từ khâu tuyển chọn những hạt cà phê Arabica và Robusta chất lượng cao từ các trang trại trứ danh, đến quá trình rang xay tỉ mỉ để giữ trọn vẹn hương vị tinh túy nhất.
+                    </p>
+                    <p class="text-stone-600 leading-relaxed text-md">
+                        Chúng tôi tự hào mang tới không gian ấm áp, kết nối mọi người thông qua tách cà phê thơm nồng và những chiếc bánh ngọt nướng tươi mỗi ngày.
+                    </p>
+                    <div class="pt-4 flex gap-4">
+                        <a th:href="@{/about}" class="btn-verona px-6 py-3 text-xs uppercase tracking-wider font-semibold">Xem chi tiết</a>
+                        <a th:href="@{/news}" class="btn-espresso px-6 py-3 text-xs uppercase tracking-wider font-semibold">Đọc tin tức</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Locations Section -->
+        <section class="py-24 bg-stone-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 mb-16">
+                <h2 class="text-sm font-semibold tracking-widest text-amber-500 uppercase">Hệ thống Cửa Hàng</h2>
+                <h3 class="text-4xl font-serif font-bold text-white">Địa Điểm Của Chúng Tôi</h3>
+                <div class="w-16 h-0.5 bg-amber-500 mx-auto"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Location 1 -->
+                <div class="bg-stone-950 border border-stone-850 rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 flex flex-col h-full group">
+                    <div class="h-56 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600&auto=format&fit=crop" 
+                             alt="Chi nhánh Sài Gòn" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 space-y-4 flex-grow flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <h4 class="text-xl font-serif font-bold text-amber-500">Seven Coffee - Sài Gòn</h4>
+                            <p class="text-xs text-stone-400 leading-relaxed">Không gian hiện đại, nằm ngay lòng Quận 1 sầm uất với ban công ngắm nhìn phố đi bộ lộng gió.</p>
+                            <div class="text-sm text-stone-300 space-y-2 pt-2 border-t border-stone-900">
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-amber-500 text-xs w-4"></i> 421 Nguyễn Huệ, Quận 1, TP. HCM</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-clock text-amber-500 text-xs w-4"></i> 7:00 AM - 10:30 PM</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-amber-500 text-xs w-4"></i> +84 28 3824 1234</p>
+                            </div>
+                        </div>
+                        <a th:href="@{/contact}" class="btn-verona w-full py-2.5 mt-6 text-center text-xs uppercase tracking-wider font-semibold block">Xem bản đồ</a>
+                    </div>
+                </div>
+
+                <!-- Location 2 -->
+                <div class="bg-stone-950 border border-stone-850 rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 flex flex-col h-full group">
+                    <div class="h-56 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=600&auto=format&fit=crop" 
+                             alt="Chi nhánh Đà Nẵng" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 space-y-4 flex-grow flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <h4 class="text-xl font-serif font-bold text-amber-500">Seven Coffee - Đà Nẵng</h4>
+                            <p class="text-xs text-stone-400 leading-relaxed">Không gian lãng mạn hướng sông Hàn thơ mộng, địa điểm tuyệt vời ngắm hoàng hôn bên tách cà phê.</p>
+                            <div class="text-sm text-stone-300 space-y-2 pt-2 border-t border-stone-900">
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-amber-500 text-xs w-4"></i> 411 Trần Hưng Đạo, Sơn Trà, Đà Nẵng</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-clock text-amber-500 text-xs w-4"></i> 6:30 AM - 10:00 PM</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-amber-500 text-xs w-4"></i> +84 236 3899 567</p>
+                            </div>
+                        </div>
+                        <a th:href="@{/contact}" class="btn-verona w-full py-2.5 mt-6 text-center text-xs uppercase tracking-wider font-semibold block">Xem bản đồ</a>
+                    </div>
+                </div>
+
+                <!-- Location 3 -->
+                <div class="bg-stone-950 border border-stone-850 rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 flex flex-col h-full group">
+                    <div class="h-56 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600&auto=format&fit=crop" 
+                             alt="Chi nhánh Hà Nội" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 space-y-4 flex-grow flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <h4 class="text-xl font-serif font-bold text-amber-500">Seven Coffee - Hà Nội</h4>
+                            <p class="text-xs text-stone-400 leading-relaxed">Kiến trúc hoài cổ pha lẫn nét tân cổ điển, nằm yên bình trên con phố rợp bóng cây của thủ đô.</p>
+                            <div class="text-sm text-stone-300 space-y-2 pt-2 border-t border-stone-900">
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-amber-500 text-xs w-4"></i> 425 Cầu Giấy, Quận Cầu Giấy, Hà Nội</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-clock text-amber-500 text-xs w-4"></i> 7:00 AM - 11:00 PM</p>
+                                <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-amber-500 text-xs w-4"></i> +84 24 3767 8910</p>
+                            </div>
+                        </div>
+                        <a th:href="@{/contact}" class="btn-verona w-full py-2.5 mt-6 text-center text-xs uppercase tracking-wider font-semibold block">Xem bản đồ</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Offers Section -->
+        <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center space-y-4 mb-16">
+                <h2 class="text-sm font-semibold tracking-widest text-amber-600 uppercase">Khuyến Mãi Cuối Tuần</h2>
+                <h3 class="text-4xl font-serif font-bold text-stone-900">Ưu Đãi Đặc Biệt</h3>
+                <div class="w-16 h-0.5 bg-amber-500 mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Offer 1 -->
+                <div class="text-center space-y-4">
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1534778101976-62847782c213?q=80&w=600&auto=format&fit=crop" 
+                             alt="Latte Special" class="w-full h-full object-cover hover:scale-105 transition-transform duration-350">
+                    </div>
+                    <h4 class="text-xl font-serif font-bold text-stone-900">Cà Phê Latte Đặc Biệt</h4>
+                    <p class="text-stone-500 text-sm max-w-xs mx-auto leading-relaxed">
+                        Sự kết hợp hoàn hảo giữa lớp kem sữa béo ngậy, hương vani tự nhiên và bột socola nguyên chất bào mịn trên mặt ly.
+                    </p>
+                </div>
+
+                <!-- Offer 2 -->
+                <div class="text-center space-y-4">
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop" 
+                             alt="Brownie Dessert" class="w-full h-full object-cover hover:scale-105 transition-transform duration-350">
+                    </div>
+                    <h4 class="text-xl font-serif font-bold text-stone-900">Bánh Ngọt Brownie</h4>
+                    <p class="text-stone-500 text-sm max-w-xs mx-auto leading-relaxed">
+                        Chiếc bánh ngọt mang hương vị socola đắng nhẹ đặc trưng, bên ngoài xốp giòn, bên trong mềm ẩm tan ngay trên đầu lưỡi.
+                    </p>
+                </div>
+
+                <!-- Offer 3 -->
+                <div class="text-center space-y-4">
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=600&auto=format&fit=crop" 
+                             alt="Healthy Breakfast" class="w-full h-full object-cover hover:scale-105 transition-transform duration-350">
+                    </div>
+                    <h4 class="text-xl font-serif font-bold text-stone-900">Bữa Sáng Dinh Dưỡng</h4>
+                    <p class="text-stone-500 text-sm max-w-xs mx-auto leading-relaxed">
+                        Nạp năng lượng tích cực cho ngày mới với bát yến mạch sữa hạt ngũ cốc kết hợp dâu tây, việt quất tươi mọng nước.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Menu (Beverages Showcase) -->
+        <section class="py-24 bg-stone-100/50 border-t border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-4 mb-16">
+                    <h2 class="text-sm font-semibold tracking-widest text-amber-600 uppercase font-sans">Menu Lựa Chọn</h2>
+                    <h3 class="text-4xl font-serif font-bold text-stone-900">Thực Đơn Đồ Uống</h3>
+                    <div class="w-16 h-0.5 bg-amber-500 mx-auto"></div>
+                </div>
+
+                <!-- Menu Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                    <!-- Iterating over Menu Items dynamically -->
+                    <div th:each="item, iter : ${menuItems}" th:if="${iter.index < 8}" 
+                         class="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 border border-stone-200/60">
+                        <!-- Image -->
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-stone-100">
+                            <!-- Try loading custom URL, else use Unsplash placeholder based on index -->
+                            <img th:src="${item.imageUrl != null && item.imageUrl != '' && #strings.startsWith(item.imageUrl, 'http') ? item.imageUrl : 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=150'}" 
+                                 th:alt="${item.name}" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Info -->
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-baseline border-b border-dashed border-stone-200 pb-1">
+                                <h4 class="font-serif font-bold text-stone-850 text-md" th:text="${item.name}">Strawberry Acai Coffee</h4>
+                                <span class="font-bold text-amber-600 text-sm" th:text="${#numbers.formatCurrency(item.price)}">$5.00</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1.5 leading-relaxed" th:text="${item.description}">Sweet strawberry flavors are accented by passion fruit...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-16">
+                    <a th:href="@{/menu}" class="btn-espresso px-8 py-3.5 text-xs uppercase tracking-wider font-bold">Xem toàn bộ thực đơn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{public_layout :: footer}"></div>
+
+</body>
+</html>
