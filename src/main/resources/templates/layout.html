@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="html_head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - Verona Cafe'"></title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Verona Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/verona.css}">
+</head>
+<body>
+
+    <!-- Header Fragment -->
+    <header th:fragment="header" class="verona-header py-4 px-6 shadow-md flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="verona-logo w-12 h-12 flex items-center justify-center text-white font-bold text-lg font-serif">V</div>
+            <div>
+                <h1 class="text-xl font-bold font-serif text-white tracking-wide m-0">Verona</h1>
+                <p class="text-xs text-amber-500 tracking-wider uppercase font-semibold">Roasters & Cafe</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="text-right text-sm">
+                <span class="text-stone-300">Xin chào, </span>
+                <span class="font-semibold text-amber-500" sec:authentication="name">User</span>
+                <span class="block text-xs text-stone-400" sec:authorize="hasRole('ADMIN')">Vai trò: Chủ quán</span>
+                <span class="block text-xs text-stone-400" sec:authorize="hasRole('STAFF')">Vai trò: Nhân viên</span>
+            </div>
+            
+            <a th:href="@{/logout}" class="btn-espresso px-4 py-2 text-xs uppercase flex items-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </a>
+        </div>
+    </header>
+
+    <!-- Sidebar Fragment -->
+    <aside th:fragment="sidebar" class="sidebar w-64 min-h-screen p-4 flex flex-col justify-between">
+        <div class="space-y-6">
+            <div class="border-b border-stone-800 pb-4 text-center">
+                <h2 class="text-md font-serif text-amber-500 tracking-wide">Danh Mục Điều Hướng</h2>
+            </div>
+            
+            <nav class="flex flex-col gap-2">
+                <!-- Admin specific links -->
+                <div sec:authorize="hasRole('ADMIN')" class="space-y-1">
+                    <p class="text-xs font-semibold text-stone-500 uppercase px-3 pb-1">Quản lý hệ thống</p>
+                    <a th:href="@{/admin/dashboard}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                        <i class="fa-solid fa-chart-line w-5"></i> Báo cáo doanh số
+                    </a>
+                    <a th:href="@{/admin/menu}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'menu' ? 'active' : ''}">
+                        <i class="fa-solid fa-mug-hot w-5"></i> Thực đơn món ăn
+                    </a>
+                    <a th:href="@{/admin/staff}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'staff' ? 'active' : ''}">
+                        <i class="fa-solid fa-users w-5"></i> Tài khoản nhân viên
+                    </a>
+                </div>
+                
+                <!-- Shared links (Admin & Staff) -->
+                <div class="space-y-1 pt-4">
+                    <p class="text-xs font-semibold text-stone-500 uppercase px-3 pb-1">Phục vụ POS</p>
+                    <a th:href="@{/staff/tables}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'tables' ? 'active' : ''}">
+                        <i class="fa-solid fa-chair w-5"></i> Sơ đồ bàn ăn
+                    </a>
+                </div>
+            </nav>
+        </div>
+        
+        <div class="text-xs text-stone-500 border-t border-stone-800 pt-4 text-center">
+            &copy; 2026 Verona Cafe
+        </div>
+    </aside>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout :: html_head('Báo cáo Doanh thu')}"></head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div th:replace="~{layout :: header}"></div>
+
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        <div th:replace="~{layout :: sidebar(activePage='dashboard')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-8 bg-stone-50">
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Title Section -->
+                <div class="flex justify-between items-center border-b border-stone-200 pb-5">
+                    <div>
+                        <h2 class="text-3xl font-bold font-serif text-stone-900">Báo Cáo Doanh Thu & Lợi Nhuận</h2>
+                        <p class="text-sm text-stone-500 mt-1">Số liệu tài chính thời gian thực của Verona Roasters & Cafe.</p>
+                    </div>
+                </div>
+
+                <!-- Financial Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Revenue Stat Card -->
+                    <div class="verona-card p-6 bg-white border border-stone-200 shadow-sm flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xs font-bold text-stone-400 uppercase tracking-wider">Doanh Thu (Sales)</p>
+                            <span class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+                                <i class="fa-solid fa-coins text-lg"></i>
+                            </span>
+                        </div>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <h3 class="text-3xl font-bold text-stone-900" th:text="'$' + ${#numbers.formatDecimal(totalRevenue ?: 0.0, 1, 2)}">$0.00</h3>
+                            <span class="text-xs text-stone-400">Tích lũy</span>
+                        </div>
+                        <div class="text-xs text-stone-500 mt-2 border-t border-stone-100 pt-2 flex justify-between">
+                            <span>Hôm nay:</span>
+                            <span class="font-bold text-amber-600" th:text="'$' + ${#numbers.formatDecimal(dailyRevenue ?: 0.0, 1, 2)}">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Cost Stat Card -->
+                    <div class="verona-card p-6 bg-white border border-stone-200 shadow-sm flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xs font-bold text-stone-400 uppercase tracking-wider">Giá Vốn (Cost of Goods)</p>
+                            <span class="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-600">
+                                <i class="fa-solid fa-receipt text-lg"></i>
+                            </span>
+                        </div>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <h3 class="text-3xl font-bold text-stone-900" th:text="'$' + ${#numbers.formatDecimal(totalCost ?: 0.0, 1, 2)}">$0.00</h3>
+                            <span class="text-xs text-stone-400">Tích lũy</span>
+                        </div>
+                        <div class="text-xs text-stone-500 mt-2 border-t border-stone-100 pt-2 flex justify-between">
+                            <span>Hôm nay:</span>
+                            <span class="font-bold text-stone-700" th:text="'$' + ${#numbers.formatDecimal(dailyCost ?: 0.0, 1, 2)}">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Profit Stat Card -->
+                    <div class="verona-card p-6 bg-white border border-stone-200 shadow-sm flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xs font-bold text-stone-400 uppercase tracking-wider">Lợi Nhuận Gộp (Profit)</p>
+                            <span class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-arrow-trend-up text-lg"></i>
+                            </span>
+                        </div>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <h3 class="text-3xl font-bold text-green-700" th:text="'$' + ${#numbers.formatDecimal(totalProfit ?: 0.0, 1, 2)}">$0.00</h3>
+                            <span class="text-xs text-stone-400">Tích lũy</span>
+                        </div>
+                        <div class="text-xs text-stone-500 mt-2 border-t border-stone-100 pt-2 flex justify-between">
+                            <span>Hôm nay:</span>
+                            <span class="font-bold text-green-600" th:text="'$' + ${#numbers.formatDecimal(dailyProfit ?: 0.0, 1, 2)}">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Stats Grid (Tables & Menu items counts) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="verona-card p-4 bg-white flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600"><i class="fa-solid fa-chair text-xl"></i></div>
+                        <div>
+                            <p class="text-xs font-semibold text-stone-400 uppercase">Tổng số bàn ăn phục vụ</p>
+                            <h4 class="text-xl font-bold text-stone-900" th:text="${tableCount}">8</h4>
+                        </div>
+                    </div>
+                    <div class="verona-card p-4 bg-white flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600"><i class="fa-solid fa-mug-hot text-xl"></i></div>
+                        <div>
+                            <p class="text-xs font-semibold text-stone-400 uppercase">Sản phẩm trong thực đơn</p>
+                            <h4 class="text-xl font-bold text-stone-900" th:text="${menuItemCount}">6</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Chart Widget -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-4">
+                    <h3 class="font-bold font-serif text-lg text-stone-900 border-b border-stone-100 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-amber-600"></i> Phân Tích Hiệu Quả Thực Đơn (Doanh thu vs Lợi nhuận)
+                    </h3>
+                    <div class="relative w-full h-80">
+                        <canvas id="profitChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+                        <h4 class="font-bold font-serif text-lg text-stone-900">Nhật Ký Giao Dịch Gần Đây</h4>
+                        <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-3 py-1 rounded-full uppercase">Lịch sử POS</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-stone-600">
+                            <thead class="text-xs text-stone-400 uppercase bg-stone-50/50 border-b border-stone-200">
+                                <tr>
+                                    <th class="px-6 py-3">Mã đơn</th>
+                                    <th class="px-6 py-3">Thời gian</th>
+                                    <th class="px-6 py-3">Bàn</th>
+                                    <th class="px-6 py-3">Thu ngân</th>
+                                    <th class="px-6 py-3">Phương thức</th>
+                                    <th class="px-6 py-3">Tổng tiền</th>
+                                    <th class="px-6 py-3">Khách trả</th>
+                                    <th class="px-6 py-3">Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr th:each="order : ${recentOrders}" class="hover:bg-stone-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-stone-900" th:text="'#' + ${order.id}">#1</td>
+                                    <td class="px-6 py-4" th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-06 14:00</td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 bg-stone-100 rounded text-xs font-bold text-stone-700" th:text="${order.table != null ? order.table.tableNumber : 'Mang về'}">T-01</span>
+                                    </td>
+                                    <td class="px-6 py-4" th:text="${order.user.fullName}">Thu ngân Maria</td>
+                                    <td class="px-6 py-4" th:text="${order.paymentMethod}">Tiền mặt</td>
+                                    <td class="px-6 py-4 font-semibold text-stone-900" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice * 1.1, 1, 2)}">$0.00</td>
+                                    <td class="px-6 py-4 text-green-600 font-semibold" th:text="'$' + ${#numbers.formatDecimal(order.amountPaid, 1, 2)}">$0.00</td>
+                                    <td class="px-6 py-4">
+                                        <a th:href="@{/staff/order/{id}/receipt(id=${order.id})}" class="text-amber-600 hover:text-amber-800 flex items-center gap-1 font-semibold text-xs">
+                                            <i class="fa-solid fa-receipt"></i> Hóa đơn
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentOrders)}">
+                                    <td colspan="8" class="text-center py-10 text-stone-400 italic">
+                                        Chưa có hóa đơn nào được thanh toán hôm nay.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ChartJS library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const chartLabels = [[${chartLabels}]];
+        const chartRevenues = [[${chartRevenues}]];
+        const chartProfits = [[${chartProfits}]];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Doanh thu ($)',
+                            data: chartRevenues,
+                            backgroundColor: '#d96b27',
+                            borderColor: '#b8541a',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Lợi nhuận ($)',
+                            data: chartProfits,
+                            backgroundColor: '#166534',
+                            borderColor: '#14532d',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(61, 30, 13, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: "'Plus Jakarta Sans', sans-serif",
+                                    size: 11,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

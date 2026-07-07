@@ -1,0 +1,55 @@
+package com.verona.cafe.service;
+
+import com.verona.cafe.model.Category;
+import com.verona.cafe.model.MenuItem;
+import com.verona.cafe.repository.CategoryRepository;
+import com.verona.cafe.repository.MenuItemRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class MenuService {
+    private final CategoryRepository categoryRepository;
+    private final MenuItemRepository menuItemRepository;
+
+    public MenuService(CategoryRepository categoryRepository, MenuItemRepository menuItemRepository) {
+        this.categoryRepository = categoryRepository;
+        this.menuItemRepository = menuItemRepository;
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Category ID: " + id));
+    }
+
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public void deleteCategory(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    public List<MenuItem> getAllMenuItems() {
+        return menuItemRepository.findAll();
+    }
+
+    public MenuItem getMenuItemById(Long id) {
+        return menuItemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Menu Item ID: " + id));
+    }
+
+    public MenuItem saveMenuItem(MenuItem menuItem) {
+        return menuItemRepository.save(menuItem);
+    }
+
+    public void deleteMenuItem(Long id) {
+        menuItemRepository.deleteById(id);
+    }
+
+    public List<MenuItem> getMenuItemsByCategory(Long categoryId) {
+        return menuItemRepository.findByCategoryId(categoryId);
+    }
+}

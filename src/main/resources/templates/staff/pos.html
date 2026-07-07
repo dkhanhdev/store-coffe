@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: html_head('Quầy POS Bán Hàng')}"></head>
+<body class="flex flex-col min-h-screen">
+
+    <div th:replace="~{layout :: header}"></div>
+
+    <div class="flex flex-1">
+        <div th:replace="~{layout :: sidebar(activePage='tables')}"></div>
+
+        <main class="flex-1 flex bg-stone-200 p-6 gap-6">
+            <!-- Left Pane: Menu Catalog -->
+            <div class="flex-1 flex flex-col bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
+                <!-- POS Tabs Header -->
+                <div class="bg-stone-50 border-b border-stone-200 px-6 py-4 flex justify-between items-center">
+                    <h3 class="font-bold font-serif text-lg text-stone-900 flex items-center gap-2">
+                        <i class="fa-solid fa-mug-hot text-amber-600"></i> Danh Mục Thực Đơn
+                    </h3>
+                </div>
+
+                <!-- Tabs & Items Grid -->
+                <div class="flex-1 p-6 overflow-y-auto space-y-6">
+                    <div th:each="cat : ${categories}" class="space-y-4">
+                        <h4 class="font-bold font-serif text-md text-amber-800 border-b border-stone-100 pb-1" th:text="${cat.name}">Category</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Menu Product Card -->
+                            <div th:each="item : ${menuItems}" th:if="${item.category.id == cat.id}"
+                                 class="verona-card p-3 flex gap-3 items-center bg-stone-50/50 cursor-pointer border hover:border-amber-400 transition-all"
+                                 th:onclick="'document.getElementById(\'add-form-' + ${item.id} + '\').submit()'">
+                                
+                                <form th:id="'add-form-' + ${item.id}" th:action="@{/staff/pos/{id}/add-item(id=${table.id})}" method="post" class="hidden">
+                                    <input type="hidden" name="menuItemId" th:value="${item.id}">
+                                    <input type="hidden" name="quantity" value="1">
+                                </form>
+
+                                <div class="w-14 h-14 bg-stone-200 border border-stone-200 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 text-stone-400">
+                                    <i class="fa-solid fa-coffee text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h5 class="font-bold text-stone-900 text-xs" th:text="${item.name}">Cà phê sữa đá</h5>
+                                    <p class="text-[10px] text-stone-500 mt-0.5 line-clamp-1" th:text="${item.description}">Mô tả</p>
+                                    <p class="font-bold text-amber-600 text-xs mt-1" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}">$5.10</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Pane: Order Cart & Billing -->
+            <div class="w-96 flex flex-col bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
+                <!-- Cart Header -->
+                <div class="bg-espresso text-white p-4 border-b-2 border-amber-500 flex justify-between items-center" style="background-color: #251206;">
+                    <div>
+                        <h4 class="font-bold font-serif text-amber-500" th:text="'Bàn ' + ${table.tableNumber}">Bàn T-01</h4>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5">Biên Lai Hiện Tại</p>
+                    </div>
+                    <a th:href="@{/staff/pos/{id}/cancel(id=${table.id})}" 
+                       class="text-xs text-stone-400 hover:text-red-400 flex items-center gap-1 font-semibold"
+                       onclick="return confirm('Bạn có chắc muốn xóa và hủy đơn của bàn ăn này không?')">
+                        <i class="fa-solid fa-trash"></i> Hủy bàn
+                    </a>
+                </div>
+
+                <!-- Cart Items List -->
+                <div class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-stone-100">
+                    <div th:each="line : ${order?.orderItems}" class="pt-3 flex justify-between items-center gap-3">
+                        <div class="flex-1">
+                            <h5 class="font-semibold text-stone-900 text-xs" th:text="${line.menuItem.name}">Món ăn</h5>
+                            <span class="text-[10px] text-stone-400" th:text="'$' + ${#numbers.formatDecimal(line.price, 1, 2)}">$5.10</span>
+                        </div>
+                        
+                        <!-- Quantity Modifiers -->
+                        <div class="flex items-center gap-2">
+                            <form th:action="@{/staff/pos/{id}/update-item(id=${table.id})}" method="post" class="flex items-center">
+                                <input type="hidden" name="menuItemId" th:value="${line.menuItem.id}">
+                                <button type="submit" name="quantity" th:value="${line.quantity - 1}"
+                                        class="w-6 h-6 bg-stone-100 hover:bg-stone-200 rounded flex items-center justify-center text-xs font-bold text-stone-600">-</button>
+                                <span class="w-8 text-center text-xs font-semibold text-stone-900" th:text="${line.quantity}">1</span>
+                                <button type="submit" name="quantity" th:value="${line.quantity + 1}"
+                                        class="w-6 h-6 bg-stone-100 hover:bg-stone-200 rounded flex items-center justify-center text-xs font-bold text-stone-600">+</button>
+                            </form>
+                        </div>
+
+                        <!-- Subtotal -->
+                        <div class="text-right min-w-[50px]">
+                            <span class="font-bold text-stone-900 text-xs" th:text="'$' + ${#numbers.formatDecimal(line.price * line.quantity, 1, 2)}">$5.10</span>
+                        </div>
+
+                        <a th:href="@{/staff/pos/{tid}/remove-item/{iid}(tid=${table.id}, iid=${line.menuItem.id})}" 
+                           class="text-stone-300 hover:text-red-500 text-xs">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    </div>
+
+                    <div th:if="${order == null || #lists.isEmpty(order.orderItems)}" class="text-center py-16 text-stone-400 italic text-xs">
+                        Giỏ hàng đang trống. Hãy nhấn chọn các món uống bên trái để thêm vào hóa đơn.
+                    </div>
+                </div>
+
+                <!-- Billing Summary & Checkout Form -->
+                <div class="bg-stone-50 border-t border-stone-200 p-4 space-y-4">
+                    <!-- Invoice Calculation -->
+                    <div class="space-y-1.5 border-b border-stone-200 pb-3 text-xs">
+                        <div class="flex justify-between text-stone-500">
+                            <span>Tiền món (Tạm tính)</span>
+                            <span th:text="'$' + ${#numbers.formatDecimal(order?.totalPrice ?: 0.0, 1, 2)}">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-stone-500">
+                            <span>Thuế VAT (10%)</span>
+                            <span th:text="'$' + ${#numbers.formatDecimal((order?.totalPrice ?: 0.0) * 0.1, 1, 2)}">$0.00</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-stone-900 text-sm pt-1">
+                            <span>Tổng cộng thanh toán</span>
+                            <span th:text="'$' + ${#numbers.formatDecimal((order?.totalPrice ?: 0.0) * 1.1, 1, 2)}">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Form -->
+                    <form th:action="@{/staff/pos/{id}/checkout(id=${table.id})}" method="post" class="space-y-3" th:if="${order != null && !#lists.isEmpty(order.orderItems)}">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-stone-500 uppercase mb-1">Phương thức thanh toán</label>
+                            <select name="paymentMethod" required class="w-full verona-input text-xs py-2">
+                                <option value="Tiền mặt">Tiền mặt / Cash</option>
+                                <option value="Thẻ ngân hàng">Thẻ ngân hàng / Card</option>
+                                <option value="Chuyển khoản">Chuyển khoản / Bank Transfer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-semibold text-stone-500 uppercase mb-1">Số tiền khách đưa ($)</label>
+                            <input type="number" step="0.01" name="amountPaid" th:value="${#numbers.formatDecimal((order?.totalPrice ?: 0.0) * 1.1, 1, 2)}" required
+                                   class="w-full verona-input text-xs py-2">
+                        </div>
+
+                        <button type="submit" class="btn-verona w-full py-3 text-xs uppercase flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cash-register"></i> Thanh Toán & Xuất Hóa Đơn
+                        </button>
+                    </form>
+                    
+                    <button disabled class="w-full py-3 bg-stone-300 text-stone-400 rounded-lg text-xs uppercase font-bold cursor-not-allowed"
+                            th:if="${order == null || #lists.isEmpty(order.orderItems)}">
+                        Giỏ hàng trống
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: html_head('Quản lý Nhân viên')}"></head>
+<body class="flex flex-col min-h-screen">
+
+    <div th:replace="~{layout :: header}"></div>
+
+    <div class="flex flex-1">
+        <div th:replace="~{layout :: sidebar(activePage='staff')}"></div>
+
+        <main class="flex-1 p-8 bg-stone-50">
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Title -->
+                <div class="flex justify-between items-center border-b border-stone-200 pb-5">
+                    <div>
+                        <h2 class="text-3xl font-bold font-serif text-stone-900">Tài Khoản Nhân Viên & Phân Quyền</h2>
+                        <p class="text-sm text-stone-500 mt-1">Quản lý thông tin tài khoản đăng nhập, phân quyền và vai trò hệ thống.</p>
+                    </div>
+                </div>
+
+                <!-- Báo lỗi nếu có -->
+                <div th:if="${param.error}" class="space-y-2">
+                    <div th:if="${param.error[0] == 'duplicateUsername'}" class="bg-red-950/10 border border-red-200 text-red-800 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Tên đăng nhập này đã tồn tại! Vui lòng chọn tên đăng nhập khác.</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Column 1: Add User Form -->
+                    <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm h-fit">
+                        <h3 class="font-bold font-serif text-lg text-stone-900 mb-4 border-b border-stone-100 pb-2">Tạo Tài Khoản Mới</h3>
+                        <form th:action="@{/admin/staff/add}" th:object="${newUser}" method="post" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-500 uppercase mb-2">Tên đăng nhập</label>
+                                <input type="text" th:field="*{username}" required placeholder="Ví dụ: maria_cashier"
+                                       class="w-full verona-input text-sm">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-500 uppercase mb-2">Mật khẩu</label>
+                                <input type="password" th:field="*{password}" required placeholder="Nhập mật khẩu"
+                                       class="w-full verona-input text-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-500 uppercase mb-2">Họ và tên nhân viên</label>
+                                <input type="text" th:field="*{fullName}" required placeholder="Ví dụ: Maria Cashier"
+                                       class="w-full verona-input text-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-500 uppercase mb-2">Quyền hệ thống</label>
+                                <select th:field="*{role}" required class="w-full verona-input text-sm">
+                                    <option th:value="ADMIN">CHỦ QUÁN / OWNER</option>
+                                    <option th:value="STAFF">NHÂN VIÊN / CASHIER</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-verona w-full py-2.5 text-xs uppercase flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-user-plus"></i> Lưu tài khoản nhân viên
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Column 2 & 3: Staff Accounts Table -->
+                    <div class="lg:col-span-2 bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden h-fit">
+                        <div class="px-6 py-4 border-b border-stone-200 bg-stone-50">
+                            <h3 class="font-bold font-serif text-lg text-stone-900">Danh Sách Tài Khoản Hệ Thống</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-stone-600">
+                                <thead class="text-xs text-stone-400 uppercase bg-stone-50/50 border-b border-stone-200">
+                                    <tr>
+                                        <th class="px-6 py-3">Mã số</th>
+                                        <th class="px-6 py-3">Họ và Tên</th>
+                                        <th class="px-6 py-3">Tên đăng nhập</th>
+                                        <th class="px-6 py-3">Quyền truy cập</th>
+                                        <th class="px-6 py-3">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-stone-100">
+                                    <tr th:each="user : ${staffs}" class="hover:bg-stone-50/50 transition-colors">
+                                        <td class="px-6 py-4 font-mono text-xs text-stone-400" th:text="${user.id}">1</td>
+                                        <td class="px-6 py-4 font-semibold text-stone-900" th:text="${user.fullName}">Chủ quán Verona</td>
+                                        <td class="px-6 py-4 font-mono text-xs" th:text="${user.username}">admin</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2.5 py-0.5 rounded text-xs font-semibold"
+                                                  th:classappend="${user.role.name() == 'ADMIN' ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-700'}"
+                                                  th:text="${user.role.name() == 'ADMIN' ? 'CHỦ QUÁN' : 'NHÂN VIÊN'}">CHỦ QUÁN</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <!-- Do not allow admin to delete themselves to avoid lockout -->
+                                            <a th:if="${user.username != 'admin'}" 
+                                               th:href="@{/admin/staff/delete/{id}(id=${user.id})}" 
+                                               class="text-red-500 hover:text-red-700 font-semibold text-xs flex items-center gap-1"
+                                               onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')">
+                                                <i class="fa-solid fa-trash-can"></i> Xóa
+                                            </a>
+                                            <span th:if="${user.username == 'admin'}" class="text-stone-300 text-xs italic">Khóa hệ thống</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
