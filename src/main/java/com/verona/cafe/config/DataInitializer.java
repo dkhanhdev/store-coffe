@@ -2,6 +2,12 @@ package com.verona.cafe.config;
 
 import com.verona.cafe.model.*;
 import com.verona.cafe.repository.*;
+import com.verona.cafe.model.Shift;
+import com.verona.cafe.model.Attendance;
+import com.verona.cafe.repository.ShiftRepository;
+import com.verona.cafe.repository.AttendanceRepository;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,18 +22,24 @@ public class DataInitializer implements CommandLineRunner {
     private final MenuItemRepository menuItemRepository;
     private final CafeTableRepository cafeTableRepository;
     private final PasswordEncoder passwordEncoder;
+                private final ShiftRepository shiftRepository;
+                private final AttendanceRepository attendanceRepository;
 
-    public DataInitializer(UserRepository userRepository,
-                           CategoryRepository categoryRepository,
-                           MenuItemRepository menuItemRepository,
-                           CafeTableRepository cafeTableRepository,
-                           PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.cafeTableRepository = cafeTableRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+        public DataInitializer(UserRepository userRepository,
+                                                   CategoryRepository categoryRepository,
+                                                   MenuItemRepository menuItemRepository,
+                                                   CafeTableRepository cafeTableRepository,
+                                                   PasswordEncoder passwordEncoder,
+                                                   ShiftRepository shiftRepository,
+                                                   AttendanceRepository attendanceRepository) {
+                this.userRepository = userRepository;
+                this.categoryRepository = categoryRepository;
+                this.menuItemRepository = menuItemRepository;
+                this.cafeTableRepository = cafeTableRepository;
+                this.passwordEncoder = passwordEncoder;
+                this.shiftRepository = shiftRepository;
+                this.attendanceRepository = attendanceRepository;
+        }
 
     @Override
     public void run(String... args) throws Exception {
@@ -139,5 +151,42 @@ public class DataInitializer implements CommandLineRunner {
 
             cafeTableRepository.saveAll(Arrays.asList(table1, table2, table3, table4, table5, table6, table7, table8));
         }
+
+                // 5. Seed sample shifts
+                if (shiftRepository.count() == 0) {
+                        User staffUser = userRepository.findByUsername("staff").orElse(null);
+                        if (staffUser != null) {
+                                Shift s1 = Shift.builder()
+                                                .user(staffUser)
+                                                .startTime(LocalDateTime.now().minusHours(8))
+                                                .endTime(LocalDateTime.now())
+                                                .note("Ca sáng")
+                                                .build();
+
+                                Shift s2 = Shift.builder()
+                                                .user(staffUser)
+                                                .startTime(LocalDateTime.now().plusHours(8))
+                                                .endTime(LocalDateTime.now().plusHours(16))
+                                                .note("Ca tối")
+                                                .build();
+
+                                shiftRepository.saveAll(Arrays.asList(s1, s2));
+                        }
+                }
+
+                        // 6. Seed sample attendance
+                        if (attendanceRepository.count() == 0) {
+                            User staffUser = userRepository.findByUsername("staff").orElse(null);
+                            if (staffUser != null) {
+                                Attendance a = Attendance.builder()
+                                        .user(staffUser)
+                                        .date(LocalDate.now())
+                                        .clockIn(LocalDateTime.now().minusHours(4))
+                                        .clockOut(null)
+                                        .note("Bắt đầu ca demo")
+                                        .build();
+                                attendanceRepository.save(a);
+                            }
+                        }
     }
 }

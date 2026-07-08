@@ -2,6 +2,10 @@ package com.verona.cafe.controller;
 
 import com.verona.cafe.model.*;
 import com.verona.cafe.service.*;
+import com.verona.cafe.model.Shift;
+import com.verona.cafe.model.Attendance;
+import com.verona.cafe.service.ShiftService;
+import com.verona.cafe.service.AttendanceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +23,21 @@ public class StaffController {
     private final OrderService orderService;
     private final MenuService menuService;
     private final UserService userService;
+    private final ShiftService shiftService;
+    private final AttendanceService attendanceService;
 
     public StaffController(TableService tableService,
                            OrderService orderService,
                            MenuService menuService,
-                           UserService userService) {
+                           UserService userService,
+                           ShiftService shiftService,
+                           AttendanceService attendanceService) {
         this.tableService = tableService;
         this.orderService = orderService;
         this.menuService = menuService;
         this.userService = userService;
+        this.shiftService = shiftService;
+        this.attendanceService = attendanceService;
     }
 
     @GetMapping("/tables")
@@ -111,5 +121,84 @@ public class StaffController {
             model.addAttribute("selectedDate", "");
         }
         return "staff/history";
+    }
+
+    @GetMapping("/shifts")
+    public String viewShifts(Model model) {
+        model.addAttribute("activePage", "shifts");
+        model.addAttribute("shifts", shiftService.getAllShifts());
+        model.addAttribute("users", userService.getAllUsers());
+        return "staff/shifts";
+    }
+
+    @GetMapping("/shifts/new")
+    public String newShiftForm(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("shift", new Shift());
+        return "staff/shifts";
+    }
+
+    @PostMapping("/shifts")
+    public String saveShift(@ModelAttribute Shift shift) {
+        shiftService.saveShift(shift);
+        return "redirect:/staff/shifts";
+    }
+
+    @GetMapping("/shifts/{id}/delete")
+    public String deleteShift(@PathVariable Long id) {
+        shiftService.deleteShift(id);
+        return "redirect:/staff/shifts";
+    }
+
+    @GetMapping("/attendance")
+    public String viewAttendance(Model model, Principal principal,
+                                 @RequestParam(value = "date", required = false) String dateStr) {
+        model.addAttribute("activePage", "attendance");
+        String username = principal.getName();
+        com.verona.cafe.model.User user = userService.getUserByUsername(username);
+        java.time.LocalDate date = dateStr == null || dateStr.isBlank() ? java.time.LocalDate.now() : java.time.LocalDate.parse(dateStr);
+        Attendance att = attendanceService.getByUserAndDate(user, date);
+        model.addAttribute("attendance", att);
+        model.addAttribute("attendances", attendanceService.getByUser(user));
+        model.addAttribute("selectedDate", date.toString());
+        return "staff/attendance";
+    }
+
+    @PostMapping("/attendance/clockin")
+    public String clockIn(Principal principal) {
+        String username = principal.getName();
+        com.verona.cafe.model.User user = userService.getUserByUsername(username);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        Attendance att = attendanceService.getByUserAndDate(user, today);
+        if (att == null) {
+            att = Attendance.builder()
+                    .user(user)
+                    .date(today)
+                    .clockIn(java.time.LocalDateTime.now())
+                    .build();
+        } else {
+            att.setClockIn(java.time.LocalDateTime.now());
+        }
+        attendanceService.save(att);
+        return "redirect:/staff/attendance";
+    }
+
+    @PostMapping("/attendance/clockout")
+    public String clockOut(Principal principal) {
+        String username = principal.getName();
+        com.verona.cafe.model.User user = userService.getUserByUsername(username);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        Attendance att = attendanceService.getByUserAndDate(user, today);
+        if (att == null) {
+            att = Attendance.builder()
+                    .user(user)
+                    .date(today)
+                    .clockOut(java.time.LocalDateTime.now())
+                    .build();
+        } else {
+            att.setClockOut(java.time.LocalDateTime.now());
+        }
+        attendanceService.save(att);
+        return "redirect:/staff/attendance";
     }
 }
