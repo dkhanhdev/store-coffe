@@ -20,6 +20,40 @@
                         <p class="text-sm text-stone-500 mt-1">Số liệu tài chính thời gian thực của Verona Roasters & Cafe.</p>
                     </div>
                 </div>
+                <!-- Revenue by Staff -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+                        <h4 class="font-bold font-serif text-lg text-stone-900">Doanh Thu Theo Nhân Viên</h4>
+                        <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-3 py-1 rounded-full uppercase">Báo cáo</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-stone-600">
+                            <thead class="text-xs text-stone-400 uppercase bg-stone-50/50 border-b border-stone-200">
+                                <tr>
+                                    <th class="px-6 py-3">Nhân viên</th>
+                                    <th class="px-6 py-3">Số đơn</th>
+                                    <th class="px-6 py-3">Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr th:each="row : ${revenueByStaff}">
+                                    <td class="px-6 py-4" th:text="${row.fullName}">Nguyen Van A</td>
+                                    <td class="px-6 py-4" th:text="${row.ordersCount}">5</td>
+                                    <td class="px-6 py-4 font-semibold text-stone-900" th:text="'$', ${#numbers.formatDecimal(row.revenue ?: 0.0, 1, 2)}">$0.00</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(revenueByStaff)}">
+                                    <td colspan="3" class="text-center py-10 text-stone-400 italic">Chưa có dữ liệu doanh thu theo nhân viên.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-6 border-t border-stone-100 bg-stone-50">
+                        <h5 class="text-sm font-semibold text-stone-700 mb-3">Biểu đồ hiệu suất nhân viên</h5>
+                        <div class="w-full h-60">
+                            <canvas id="staffChart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Financial Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -164,6 +198,9 @@
         const chartLabels = [[${chartLabels}]];
         const chartRevenues = [[${chartRevenues}]];
         const chartProfits = [[${chartProfits}]];
+        const staffLabels = [[${staffChartLabels}]];
+        const staffRevenues = [[${staffChartRevenues}]];
+        const staffOrders = [[${staffChartOrders}]];
         
         document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('profitChart').getContext('2d');
@@ -218,6 +255,33 @@
                             }
                         }
                     }
+                }
+            });
+
+            // Staff performance chart
+            const ctx2 = document.getElementById('staffChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: staffLabels,
+                    datasets: [
+                        {
+                            label: 'Doanh thu ($)',
+                            data: staffRevenues,
+                            backgroundColor: '#2563eb',
+                            borderColor: '#1e40af',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: { legend: { display: false } }
                 }
             });
         });

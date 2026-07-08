@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
 
 @Controller
 public class PublicController {
@@ -61,5 +64,12 @@ public class PublicController {
     public String contact(Model model) {
         model.addAttribute("activePage", "contact");
         return "public/contact";
+    }
+
+    @PostMapping("/menu/{id}/like")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> likeMenuItem(@PathVariable("id") Long id) {
+        int likes = menuService.incrementLikes(id);
+        return ResponseEntity.ok(Map.of("likes", likes));
     }
 }

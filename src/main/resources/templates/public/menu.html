@@ -80,7 +80,13 @@
                         
                         <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
                             <span><i class="fa-solid fa-leaf text-green-600"></i> Nguyên liệu sạch</span>
-                            <span>Mã món: <strong class="font-mono text-stone-600" th:text="'M-' + ${item.id}">M-01</strong></span>
+                            <span class="flex items-center gap-3">
+                                <span>Mã món: <strong class="font-mono text-stone-600" th:text="'M-' + ${item.id}">M-01</strong></span>
+                                <button type="button" class="like-btn flex items-center gap-2 text-amber-600 hover:text-amber-700" th:attr="data-id=${item.id}" onclick="likeItem(this)">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <span class="likes-count" th:text="${item.likes}">0</span>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -160,6 +166,22 @@
                 msg.classList.remove('hidden');
             } else {
                 msg.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <script>
+        async function likeItem(el) {
+            const id = el.getAttribute('data-id');
+            try {
+                const res = await fetch(`/menu/${id}/like`, { method: 'POST' });
+                if (!res.ok) throw new Error('Network error');
+                const data = await res.json();
+                const countSpan = el.querySelector('.likes-count');
+                if (countSpan) countSpan.textContent = data.likes;
+                el.classList.add('liked');
+            } catch (e) {
+                console.error('Like failed', e);
             }
         }
     </script>

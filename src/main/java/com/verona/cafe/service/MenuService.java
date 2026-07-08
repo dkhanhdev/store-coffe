@@ -63,6 +63,7 @@ public class MenuService {
         return menuItemRepository.findByCategoryId(categoryId);
     }
 
+<<<<<<< Updated upstream
     public List<MenuItem> getTopSellingMenuItems(int limit) {
         List<MenuItem> queryResult = menuItemRepository.findTopSellingMenuItems(PageRequest.of(0, limit));
         List<MenuItem> topSellers = new ArrayList<>(queryResult);
@@ -76,5 +77,16 @@ public class MenuService {
             }
         }
         return topSellers;
+=======
+    public int incrementLikes(Long id) {
+        MenuItem item = getMenuItemById(id);
+        if (item.getLikes() == null) {
+            item.setLikes(1);
+        } else {
+            item.setLikes(item.getLikes() + 1);
+        }
+        menuItemRepository.save(item);
+        return item.getLikes();
+>>>>>>> Stashed changes
     }
 }

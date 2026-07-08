@@ -31,4 +31,8 @@ public class MenuItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer likes = 0;
 }

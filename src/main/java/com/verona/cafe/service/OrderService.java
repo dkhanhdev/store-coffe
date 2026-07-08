@@ -236,4 +236,32 @@ public class OrderService {
     public Double getDailyProfit() {
         return getDailyRevenue() - getDailyCost();
     }
+
+    public java.util.List<java.util.Map<String, Object>> getRevenueByStaff(java.time.LocalDate startDate, java.time.LocalDate endDate) {
+        java.util.stream.Stream<Order> stream = getAllCompletedOrders().stream();
+        if (startDate != null) {
+            java.time.LocalDateTime start = startDate.atStartOfDay();
+            java.time.LocalDateTime end = (endDate != null) ? endDate.atTime(java.time.LocalTime.MAX) : java.time.LocalDateTime.MAX;
+            stream = stream.filter(o -> !o.getOrderDate().isBefore(start) && !o.getOrderDate().isAfter(end));
+        }
+
+        java.util.Map<User, java.util.DoubleSummaryStatistics> stats = stream.collect(
+                java.util.stream.Collectors.groupingBy(Order::getUser,
+                        java.util.stream.Collectors.summarizingDouble(Order::getTotalPrice)));
+
+        java.util.List<java.util.Map<String, Object>> result = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<User, java.util.DoubleSummaryStatistics> e : stats.entrySet()) {
+            User u = e.getKey();
+            java.util.DoubleSummaryStatistics s = e.getValue();
+            java.util.Map<String, Object> m = new java.util.HashMap<>();
+            m.put("userId", u.getId());
+            m.put("fullName", u.getFullName());
+            m.put("revenue", s.getSum());
+            m.put("ordersCount", s.getCount());
+            result.add(m);
+        }
+
+        result.sort((a, b) -> Double.compare((Double) b.get("revenue"), (Double) a.get("revenue")));
+        return result;
+    }
 }

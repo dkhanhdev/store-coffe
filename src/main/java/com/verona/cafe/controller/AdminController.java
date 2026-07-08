@@ -85,6 +85,23 @@ public class AdminController {
         model.addAttribute("chartRevenues", itemRevenues);
         model.addAttribute("chartProfits", itemProfits);
 
+        java.util.List<java.util.Map<String, Object>> staffRows = orderService.getRevenueByStaff(null, null);
+        model.addAttribute("revenueByStaff", staffRows);
+
+        java.util.List<String> staffNames = new java.util.ArrayList<>();
+        java.util.List<Double> staffRevenues = new java.util.ArrayList<>();
+        java.util.List<Integer> staffOrders = new java.util.ArrayList<>();
+        for (java.util.Map<String, Object> row : staffRows) {
+            staffNames.add((String) row.get("fullName"));
+            Object rev = row.get("revenue");
+            staffRevenues.add(rev instanceof Number ? ((Number) rev).doubleValue() : 0.0);
+            Object cnt = row.get("ordersCount");
+            staffOrders.add(cnt instanceof Number ? ((Number) cnt).intValue() : 0);
+        }
+        model.addAttribute("staffChartLabels", staffNames);
+        model.addAttribute("staffChartRevenues", staffRevenues);
+        model.addAttribute("staffChartOrders", staffOrders);
+
         return "admin/dashboard";
     }
 
