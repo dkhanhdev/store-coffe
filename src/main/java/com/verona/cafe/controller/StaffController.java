@@ -2,6 +2,7 @@ package com.verona.cafe.controller;
 
 import com.verona.cafe.model.*;
 import com.verona.cafe.service.*;
+import com.verona.cafe.repository.CustomerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,18 @@ public class StaffController {
     private final OrderService orderService;
     private final MenuService menuService;
     private final UserService userService;
+    private final CustomerRepository customerRepository;
 
     public StaffController(TableService tableService,
                            OrderService orderService,
                            MenuService menuService,
-                           UserService userService) {
+                           UserService userService,
+                           CustomerRepository customerRepository) {
         this.tableService = tableService;
         this.orderService = orderService;
         this.menuService = menuService;
         this.userService = userService;
+        this.customerRepository = customerRepository;
     }
 
     @GetMapping("/tables")
@@ -52,6 +56,32 @@ public class StaffController {
         }
         
         return "staff/pos";
+    }
+
+    @PostMapping("/pos/{tableId}/start")
+    public String startOrder(@PathVariable Long tableId,
+                             @RequestParam String customerPhone,
+                             @RequestParam String customerName,
+                             Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        orderService.startOrderWithCustomer(tableId, customerPhone, customerName, user);
+        return "redirect:/staff/pos/" + tableId;
+    }
+
+    @GetMapping("/api/customers/lookup")
+    @ResponseBody
+    public java.util.Map<String, String> lookupCustomer(@RequestParam String phone) {
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        customerRepository.findByPhoneNumber(phone).ifPresentOrElse(
+            c -> {
+                response.put("name", c.getName());
+                response.put("found", "true");
+            },
+            () -> {
+                response.put("found", "false");
+            }
+        );
+        return response;
     }
 
     @PostMapping("/pos/{tableId}/add-item")

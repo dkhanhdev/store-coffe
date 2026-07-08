@@ -31,6 +31,14 @@
                         <span>Bàn phục vụ:</span>
                         <span th:text="${order.table != null ? order.table.tableNumber : 'Mang về'}">T-01</span>
                     </div>
+                    <div class="flex justify-between" th:if="${order.customer != null}">
+                        <span>Khách hàng:</span>
+                        <span th:text="${order.customer.name}">Nguyễn Văn A</span>
+                    </div>
+                    <div class="flex justify-between" th:if="${order.customer != null}">
+                        <span>Số điện thoại:</span>
+                        <span th:text="${order.customer.phoneNumber}">0987654321</span>
+                    </div>
                     <div class="flex justify-between">
                         <span>Nhân viên phục vụ:</span>
                         <span th:text="${order.user.fullName}">Thu ngân Maria</span>
