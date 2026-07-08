@@ -4,6 +4,7 @@ import com.verona.cafe.service.MenuService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PublicController {
@@ -29,10 +30,11 @@ public class PublicController {
     }
 
     @GetMapping("/menu")
-    public String menu(Model model) {
+    public String menu(Model model, @RequestParam(value = "search", required = false) String search) {
         model.addAttribute("activePage", "menu");
         model.addAttribute("categories", menuService.getAllCategories());
-        model.addAttribute("menuItems", menuService.getAllMenuItems());
+        model.addAttribute("menuItems", menuService.searchMenuItems(search));
+        model.addAttribute("search", search);
         return "public/menu";
     }
 

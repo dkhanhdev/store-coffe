@@ -37,6 +37,14 @@ public class MenuService {
         return menuItemRepository.findAll();
     }
 
+    public List<MenuItem> searchMenuItems(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllMenuItems();
+        }
+        String normalizedKeyword = keyword.trim();
+        return menuItemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(normalizedKeyword, normalizedKeyword);
+    }
+
     public MenuItem getMenuItemById(Long id) {
         return menuItemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Menu Item ID: " + id));
     }
