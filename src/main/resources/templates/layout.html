@@ -60,6 +60,10 @@
                        th:classappend="${activePage == 'staff' ? 'active' : ''}">
                         <i class="fa-solid fa-users w-5"></i> Tài khoản nhân viên
                     </a>
+                    <a th:href="@{/admin/customers}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'customers' ? 'active' : ''}">
+                        <i class="fa-solid fa-crown w-5"></i> Khách hàng thân thiết
+                    </a>
                 </div>
                 
                 <!-- Shared links (Admin & Staff) -->

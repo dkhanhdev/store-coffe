@@ -2,6 +2,7 @@ package com.verona.cafe.service;
 
 import com.verona.cafe.model.*;
 import com.verona.cafe.repository.CafeTableRepository;
+import com.verona.cafe.repository.CustomerRepository;
 import com.verona.cafe.repository.MenuItemRepository;
 import com.verona.cafe.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CafeTableRepository tableRepository;
     private final MenuItemRepository menuItemRepository;
+    private final CustomerRepository customerRepository;
 
     public OrderService(OrderRepository orderRepository,
                         CafeTableRepository tableRepository,
-                        MenuItemRepository menuItemRepository) {
+                        MenuItemRepository menuItemRepository,
+                        CustomerRepository customerRepository) {
         this.orderRepository = orderRepository;
         this.tableRepository = tableRepository;
         this.menuItemRepository = menuItemRepository;
+        this.customerRepository = customerRepository;
     }
 
     public Order getOrderById(Long id) {
@@ -37,6 +41,38 @@ public class OrderService {
 
     public Optional<Order> getActiveOrderByTable(Long tableId) {
         return orderRepository.findByTableIdAndStatus(tableId, OrderStatus.ACTIVE);
+    }
+
+    public Order startOrderWithCustomer(Long tableId, String customerPhone, String customerName, User user) {
+        CafeTable table = tableRepository.findById(tableId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid table ID"));
+
+        table.setStatus(TableStatus.OCCUPIED);
+        tableRepository.save(table);
+
+        Customer customer = customerRepository.findByPhoneNumber(customerPhone)
+                .orElseGet(() -> Customer.builder()
+                        .phoneNumber(customerPhone)
+                        .name(customerName)
+                        .totalSpent(0.0)
+                        .build());
+        
+        if (!customer.getName().equalsIgnoreCase(customerName)) {
+            customer.setName(customerName);
+        }
+        customerRepository.save(customer);
+
+        Order order = Order.builder()
+                .table(table)
+                .user(user)
+                .customer(customer)
+                .orderDate(LocalDateTime.now())
+                .status(OrderStatus.ACTIVE)
+                .orderItems(new ArrayList<>())
+                .totalPrice(0.0)
+                .build();
+
+        return orderRepository.save(order);
     }
 
     public Order getOrCreateActiveOrder(Long tableId, User user) {
@@ -64,7 +100,8 @@ public class OrderService {
     }
 
     public Order addItemToOrder(Long tableId, Long menuItemId, int quantity, User user) {
-        Order order = getOrCreateActiveOrder(tableId, user);
+        Order order = getActiveOrderByTable(tableId)
+                .orElseThrow(() -> new IllegalStateException("Vui lòng nhập thông tin khách hàng trước!"));
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu item ID"));
 
@@ -121,6 +158,13 @@ public class OrderService {
         CafeTable table = order.getTable();
         table.setStatus(TableStatus.AVAILABLE);
         tableRepository.save(table);
+
+        Customer customer = order.getCustomer();
+        if (customer != null) {
+            double totalWithVat = order.getTotalPrice() * 1.1;
+            customer.setTotalSpent(customer.getTotalSpent() + totalWithVat);
+            customerRepository.save(customer);
+        }
 
         return orderRepository.save(order);
     }

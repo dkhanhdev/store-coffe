@@ -19,7 +19,7 @@
                 </div>
 
                 <!-- Tabs & Items Grid -->
-                <div class="flex-1 p-6 overflow-y-auto space-y-6">
+                <div class="flex-1 p-6 overflow-y-auto space-y-6" th:classappend="${order == null} ? 'opacity-50 pointer-events-none' : ''">
                     <div th:each="cat : ${categories}" class="space-y-4">
                         <h4 class="font-bold font-serif text-md text-amber-800 border-b border-stone-100 pb-1" th:text="${cat.name}">Category</h4>
                         
@@ -54,17 +54,50 @@
                 <div class="bg-espresso text-white p-4 border-b-2 border-amber-500 flex justify-between items-center" style="background-color: #251206;">
                     <div>
                         <h4 class="font-bold font-serif text-amber-500" th:text="'Bàn ' + ${table.tableNumber}">Bàn T-01</h4>
-                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5">Biên Lai Hiện Tại</p>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5" th:if="${order != null}"
+                           th:text="'Khách: ' + ${order.customer?.name} + ' (' + ${order.customer?.phoneNumber} + ')'"></p>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5" th:if="${order == null}">Biên Lai Hiện Tại</p>
                     </div>
-                    <a th:href="@{/staff/pos/{id}/cancel(id=${table.id})}" 
+                    <a th:if="${order != null}" th:href="@{/staff/pos/{id}/cancel(id=${table.id})}" 
                        class="text-xs text-stone-400 hover:text-red-400 flex items-center gap-1 font-semibold"
                        onclick="return confirm('Bạn có chắc muốn xóa và hủy đơn của bàn ăn này không?')">
                         <i class="fa-solid fa-trash"></i> Hủy bàn
                     </a>
                 </div>
 
+                <!-- Start Order Form (if no active order) -->
+                <div th:if="${order == null}" class="flex-1 p-6 flex flex-col justify-center space-y-4">
+                    <h4 class="font-serif font-bold text-stone-900 text-center text-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-chair text-amber-600"></i> Thông Tin Đặt Bàn
+                    </h4>
+                    <p class="text-[11px] text-stone-500 text-center">Vui lòng nhập thông tin khách hàng để kích hoạt và bắt đầu gọi món.</p>
+                    <form th:action="@{/staff/pos/{id}/start(id=${table.id})}" method="post" class="space-y-4 pt-4">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-stone-600 uppercase mb-1">Số điện thoại</label>
+                            <div class="relative">
+                                <input type="text" name="customerPhone" id="customerPhone" required placeholder="Nhập số điện thoại..."
+                                       class="w-full verona-input text-xs py-2.5 pl-3 pr-10">
+                                <span id="lookup-spinner" class="hidden absolute right-3 top-3.5 text-stone-400 text-xs">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                </span>
+                            </div>
+                            <span id="vip-badge" class="hidden text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full mt-1.5 inline-block">
+                                <i class="fa-solid fa-crown text-[8px] mr-1"></i> Khách hàng thân thiết
+                            </span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-stone-600 uppercase mb-1">Tên khách hàng</label>
+                            <input type="text" name="customerName" id="customerName" required placeholder="Nhập họ và tên..."
+                                   class="w-full verona-input text-xs py-2.5">
+                        </div>
+                        <button type="submit" class="btn-verona w-full py-3 text-xs uppercase flex items-center justify-center gap-2 mt-6">
+                            <i class="fa-solid fa-play"></i> Bắt đầu đặt bàn
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Cart Items List -->
-                <div class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-stone-100">
+                <div th:if="${order != null}" class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-stone-100">
                     <div th:each="line : ${order?.orderItems}" class="pt-3 flex justify-between items-center gap-3">
                         <div class="flex-1">
                             <h5 class="font-semibold text-stone-900 text-xs" th:text="${line.menuItem.name}">Món ăn</h5>
@@ -100,7 +133,7 @@
                 </div>
 
                 <!-- Billing Summary & Checkout Form -->
-                <div class="bg-stone-50 border-t border-stone-200 p-4 space-y-4">
+                <div th:if="${order != null}" class="bg-stone-50 border-t border-stone-200 p-4 space-y-4">
                     <!-- Invoice Calculation -->
                     <div class="space-y-1.5 border-b border-stone-200 pb-3 text-xs">
                         <div class="flex justify-between text-stone-500">
@@ -147,6 +180,37 @@
             </div>
         </main>
     </div>
+
+    <script th:if="${order == null}">
+        document.getElementById('customerPhone').addEventListener('input', function(e) {
+            const phone = e.target.value.trim();
+            const badge = document.getElementById('vip-badge');
+            const nameInput = document.getElementById('customerName');
+            const spinner = document.getElementById('lookup-spinner');
+            
+            if (phone.length >= 9) {
+                spinner.classList.remove('hidden');
+                fetch('/staff/api/customers/lookup?phone=' + encodeURIComponent(phone))
+                    .then(response => response.json())
+                    .then(data => {
+                        spinner.classList.add('hidden');
+                        if (data.found === 'true' || data.found === true) {
+                            nameInput.value = data.name;
+                            badge.classList.remove('hidden');
+                            badge.classList.add('inline-block');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error looking up customer:', err);
+                        spinner.classList.add('hidden');
+                    });
+            } else {
+                badge.classList.add('hidden');
+            }
+        });
+    </script>
 
 </body>
 </html>
