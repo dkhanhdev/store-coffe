@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -95,5 +97,19 @@ public class StaffController {
         Order order = orderService.getOrderById(orderId);
         model.addAttribute("order", order);
         return "staff/receipt";
+    }
+
+    @GetMapping("/history")
+    public String viewOrderHistory(Model model,
+                                   @RequestParam(value = "date", required = false) String date) {
+        model.addAttribute("activePage", "history");
+        if (date != null && !date.isBlank()) {
+            model.addAttribute("orders", orderService.getCompletedOrdersByDate(LocalDate.parse(date)));
+            model.addAttribute("selectedDate", date);
+        } else {
+            model.addAttribute("orders", orderService.getAllCompletedOrders());
+            model.addAttribute("selectedDate", "");
+        }
+        return "staff/history";
     }
 }

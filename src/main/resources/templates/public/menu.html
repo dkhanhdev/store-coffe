@@ -38,13 +38,16 @@
                 </div>
                 
                 <!-- Search -->
-                <div class="relative w-full md:w-80">
+                <form th:action="@{/menu}" method="get" class="relative w-full md:w-80">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                     </span>
-                    <input type="text" id="menu-search" oninput="searchMenu()" placeholder="Tìm món nước, bánh ngọt..." 
+                    <input type="text" id="menu-search" name="search" th:value="${search}" oninput="searchMenu()" placeholder="Tìm món nước, bánh ngọt..." 
                            class="w-full bg-stone-50 border border-stone-200 rounded-full py-2.5 pl-10 pr-4 text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-sm">
-                </div>
+                    <button type="submit" class="absolute inset-y-0 right-0 px-4 text-sm font-semibold text-amber-600 hover:text-amber-700">
+                        Tìm
+                    </button>
+                </form>
             </div>
 
             <!-- Dynamic Menu Items Grid -->

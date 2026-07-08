@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -146,6 +147,12 @@ public class OrderService {
 
     public List<Order> getAllCompletedOrders() {
         return orderRepository.findByStatus(OrderStatus.COMPLETED);
+    }
+
+    public List<Order> getCompletedOrdersByDate(LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(LocalTime.MAX);
+        return orderRepository.findByStatusAndOrderDateBetween(OrderStatus.COMPLETED, start, end);
     }
 
     public Double getTotalRevenue() {

@@ -69,6 +69,10 @@
                        th:classappend="${activePage == 'tables' ? 'active' : ''}">
                         <i class="fa-solid fa-chair w-5"></i> Sơ đồ bàn ăn
                     </a>
+                    <a th:href="@{/staff/history}" class="nav-link flex items-center gap-3 px-3 py-2 text-sm"
+                       th:classappend="${activePage == 'history' ? 'active' : ''}">
+                        <i class="fa-solid fa-clock-rotate-left w-5"></i> Lịch sử hóa đơn
+                    </a>
                 </div>
             </nav>
         </div>
