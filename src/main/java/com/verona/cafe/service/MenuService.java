@@ -5,7 +5,9 @@ import com.verona.cafe.model.MenuItem;
 import com.verona.cafe.repository.CategoryRepository;
 import com.verona.cafe.repository.MenuItemRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class MenuService {
@@ -59,5 +61,20 @@ public class MenuService {
 
     public List<MenuItem> getMenuItemsByCategory(Long categoryId) {
         return menuItemRepository.findByCategoryId(categoryId);
+    }
+
+    public List<MenuItem> getTopSellingMenuItems(int limit) {
+        List<MenuItem> queryResult = menuItemRepository.findTopSellingMenuItems(PageRequest.of(0, limit));
+        List<MenuItem> topSellers = new ArrayList<>(queryResult);
+        if (topSellers.size() < limit) {
+            List<MenuItem> all = menuItemRepository.findAll();
+            for (MenuItem item : all) {
+                if (topSellers.size() >= limit) break;
+                if (topSellers.stream().noneMatch(existing -> existing.getId().equals(item.getId()))) {
+                    topSellers.add(item);
+                }
+            }
+        }
+        return topSellers;
     }
 }

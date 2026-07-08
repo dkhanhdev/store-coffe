@@ -58,6 +58,49 @@
             </div>
         </section>
 
+        <!-- Best Sellers Section -->
+        <section class="py-24 bg-amber-50/30 border-t border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-4 mb-16">
+                    <h2 class="text-sm font-semibold tracking-widest text-amber-600 uppercase font-sans">Được Yêu Thích Nhất</h2>
+                    <h3 class="text-4xl font-serif font-bold text-stone-900">Món Bán Chạy</h3>
+                    <div class="w-16 h-0.5 bg-amber-500 mx-auto"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div th:each="item : ${bestSellers}" 
+                         class="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg hover:translate-y-[-6px] transition-all duration-300 relative group">
+                        
+                        <!-- Best Seller Badge -->
+                        <span class="absolute top-4 right-4 bg-amber-500 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded-full shadow-md z-10 flex items-center gap-1">
+                            <i class="fa-solid fa-fire text-[10px]"></i> Bán chạy
+                        </span>
+                        
+                        <!-- Image Container with Zoom effect -->
+                        <div class="h-48 overflow-hidden bg-stone-100 relative bg-cover bg-center">
+                            <img th:src="${item.imageUrl != null && item.imageUrl != '' && #strings.startsWith(item.imageUrl, 'http') ? item.imageUrl : 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=250'}" 
+                                 th:alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+
+                        <!-- Item Info -->
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-3">
+                            <div class="space-y-2">
+                                <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest" th:text="${item.category.name}">Cà phê</span>
+                                <h4 class="font-serif font-bold text-stone-900 text-lg leading-snug group-hover:text-amber-600 transition-colors duration-300" th:text="${item.name}">Strawberry Acai</h4>
+                                <p class="text-xs text-stone-500 leading-relaxed line-clamp-2" th:text="${item.description}">Mô tả ngắn về sản phẩm</p>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-stone-150 flex items-center justify-between">
+                                <span class="font-bold text-stone-900 text-md" th:text="${#numbers.formatCurrency(item.price)}">$5.00</span>
+                                <span class="text-[11px] text-stone-400 bg-stone-50 px-2 py-1 rounded font-mono" th:text="'M-' + ${item.id}">M-01</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Locations Section -->
         <section class="py-24 bg-stone-900 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 mb-16">

@@ -20,6 +20,7 @@ public class PublicController {
         model.addAttribute("activePage", "home");
         model.addAttribute("categories", menuService.getAllCategories());
         model.addAttribute("menuItems", menuService.getAllMenuItems());
+        model.addAttribute("bestSellers", menuService.getTopSellingMenuItems(4));
         return "public/home";
     }
 
