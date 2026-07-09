@@ -1,0 +1,149 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: html_head('Quản lý ca làm việc')}"></head>
+  <body class="flex flex-col min-h-screen bg-stone-50">
+    <div th:replace="~{layout :: header}"></div>
+
+    <div class="flex flex-1">
+      <div th:replace="~{layout :: sidebar(activePage='shifts')}"></div>
+
+      <main class="flex-1 p-8">
+        <div class="max-w-7xl mx-auto space-y-6">
+          <div class="border-b border-stone-200 pb-4 mb-6">
+            <h2 class="text-3xl font-bold font-serif text-stone-900">
+              Quản lý ca làm việc
+            </h2>
+            <p class="text-sm text-stone-500 mt-2">
+              Tạo, sửa và xem ca làm việc của nhân viên.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div
+              class="col-span-1 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+            >
+              <form
+                th:action="@{/staff/shifts}"
+                method="post"
+                th:object="${shift}"
+              >
+                <div class="mb-4">
+                  <label class="block text-sm font-semibold text-stone-600"
+                    >Nhân viên</label
+                  >
+                  <select
+                    name="user.id"
+                    class="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
+                  >
+                    <option
+                      th:each="u : ${users}"
+                      th:value="${u.id}"
+                      th:text="${u.fullName}"
+                    ></option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-semibold text-stone-600"
+                    >Bắt đầu</label
+                  >
+                  <input
+                    type="datetime-local"
+                    name="startTime"
+                    class="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-semibold text-stone-600"
+                    >Kết thúc</label
+                  >
+                  <input
+                    type="datetime-local"
+                    name="endTime"
+                    class="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-semibold text-stone-600"
+                    >Ghi chú</label
+                  >
+                  <input
+                    name="note"
+                    class="mt-2 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div class="flex gap-2">
+                  <button
+                    type="submit"
+                    class="btn-verona inline-flex items-center gap-2 rounded-lg bg-stone-900 px-4 py-2 text-xs uppercase font-semibold text-white"
+                  >
+                    Lưu
+                  </button>
+                  <a
+                    th:href="@{/staff/shifts}"
+                    class="btn-espresso inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs uppercase font-bold"
+                    >Xóa</a
+                  >
+                </div>
+              </form>
+            </div>
+
+            <div
+              class="col-span-2 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm overflow-x-auto"
+            >
+              <table class="min-w-full text-left text-sm text-stone-700">
+                <thead
+                  class="bg-stone-100 text-xs uppercase text-stone-500 tracking-wider"
+                >
+                  <tr>
+                    <th class="px-4 py-3">ID</th>
+                    <th class="px-4 py-3">Nhân viên</th>
+                    <th class="px-4 py-3">Bắt đầu</th>
+                    <th class="px-4 py-3">Kết thúc</th>
+                    <th class="px-4 py-3">Ghi chú</th>
+                    <th class="px-4 py-3">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    th:each="s : ${shifts}"
+                    class="border-t border-stone-200 hover:bg-stone-50"
+                  >
+                    <td
+                      class="px-4 py-4 font-medium text-stone-900"
+                      th:text="${s.id}"
+                    ></td>
+                    <td class="px-4 py-4" th:text="${s.user.fullName}"></td>
+                    <td
+                      class="px-4 py-4"
+                      th:text="${#temporals.format(s.startTime, 'yyyy-MM-dd HH:mm')}"
+                    ></td>
+                    <td
+                      class="px-4 py-4"
+                      th:text="${s.endTime != null ? #temporals.format(s.endTime, 'yyyy-MM-dd HH:mm') : ''}"
+                    ></td>
+                    <td class="px-4 py-4" th:text="${s.note}"></td>
+                    <td class="px-4 py-4">
+                      <a
+                        th:href="@{/staff/shifts/{id}/delete(id=${s.id})}"
+                        class="inline-flex items-center gap-2 rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white"
+                        >Xóa</a
+                      >
+                    </td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(shifts)}">
+                    <td
+                      class="px-4 py-8 text-center text-stone-400"
+                      colspan="6"
+                    >
+                      Chưa có ca làm việc.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

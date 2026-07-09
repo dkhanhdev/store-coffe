@@ -11,7 +11,11 @@ import com.verona.cafe.service.MenuService;
 import com.verona.cafe.service.OrderService;
 import com.verona.cafe.service.TableService;
 import com.verona.cafe.service.UserService;
+
+import com.verona.cafe.model.Attendance;
+import com.verona.cafe.service.AttendanceService;
 import com.verona.cafe.repository.CustomerRepository;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +30,29 @@ public class AdminController {
     private final MenuService menuService;
     private final TableService tableService;
     private final UserService userService;
+
+    private final AttendanceService attendanceService;
+
     private final CustomerRepository customerRepository;
+
 
     public AdminController(OrderService orderService,
                            MenuService menuService,
                            TableService tableService,
                            UserService userService,
+
+                           AttendanceService attendanceService) {
+=======
                            CustomerRepository customerRepository) {
+
         this.orderService = orderService;
         this.menuService = menuService;
         this.tableService = tableService;
         this.userService = userService;
+
+        this.attendanceService = attendanceService;
         this.customerRepository = customerRepository;
+
     }
 
     @GetMapping("/dashboard")
@@ -155,6 +170,23 @@ public class AdminController {
         model.addAttribute("newUser", new User());
         model.addAttribute("roles", Role.values());
         return "admin/staff";
+    }
+
+    @GetMapping("/attendance")
+    public String attendanceOverview(Model model,
+                                     @RequestParam(value = "date", required = false) String dateStr,
+                                     @RequestParam(value = "userId", required = false) Long userId) {
+        model.addAttribute("activePage", "attendance");
+        java.time.LocalDate date = dateStr == null || dateStr.isBlank() ? java.time.LocalDate.now() : java.time.LocalDate.parse(dateStr);
+        model.addAttribute("selectedDate", date.toString());
+        model.addAttribute("users", userService.getAllUsers());
+        if (userId != null) {
+            com.verona.cafe.model.User u = userService.getAllUsers().stream().filter(x -> x.getId().equals(userId)).findFirst().orElse(null);
+            model.addAttribute("attendances", u != null ? attendanceService.getByUser(u) : java.util.List.of());
+        } else {
+            model.addAttribute("attendances", attendanceService.getByDate(date));
+        }
+        return "admin/attendance";
     }
 
     @PostMapping("/staff/add")

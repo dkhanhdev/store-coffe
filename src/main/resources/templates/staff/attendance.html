@@ -1,0 +1,93 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: html_head('Chấm công')}"></head>
+  <body class="flex flex-col min-h-screen bg-stone-50">
+    <div th:replace="~{layout :: header}"></div>
+    <div class="flex flex-1">
+      <div th:replace="~{layout :: sidebar(activePage='attendance')}"></div>
+      <main class="flex-1 p-8">
+        <div class="max-w-4xl mx-auto space-y-6">
+          <div class="border-b border-stone-200 pb-4 mb-6">
+            <h2 class="text-3xl font-bold font-serif text-stone-900">
+              Chấm công
+            </h2>
+            <p class="text-sm text-stone-500 mt-2">
+              Chấm công theo ngày: bấm "Vào ca" / "Kết thúc".
+            </p>
+          </div>
+
+          <div
+            class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+          >
+            <form method="get" class="mb-4">
+              <label class="text-sm font-semibold text-stone-600"
+                >Chọn ngày</label
+              >
+              <input
+                type="date"
+                name="date"
+                class="ml-2 rounded-lg border border-stone-300 px-3 py-2"
+                th:value="${selectedDate}"
+              />
+              <button class="btn-espresso ml-2 px-4 py-2">Xem</button>
+            </form>
+
+            <div class="mb-4">
+              <p th:if="${attendance != null}">
+                Trạng thái hôm nay:
+                <strong
+                  th:text="${attendance.clockIn != null ? 'Đã vào ca' : 'Chưa vào ca'}"
+                ></strong>
+              </p>
+              <p th:if="${attendance == null}">Chưa có bản ghi cho ngày này.</p>
+              <div class="flex gap-2 mt-3">
+                <form th:action="@{/staff/attendance/clockin}" method="post">
+                  <button class="btn-verona px-4 py-2">Vào ca</button>
+                </form>
+                <form th:action="@{/staff/attendance/clockout}" method="post">
+                  <button class="btn-espresso px-4 py-2">Kết thúc</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="text-lg font-semibold mb-3">Lịch sử chấm công</h3>
+              <table class="min-w-full text-left text-sm text-stone-700">
+                <thead
+                  class="bg-stone-100 text-xs uppercase text-stone-500 tracking-wider"
+                >
+                  <tr>
+                    <th class="px-4 py-3">Ngày</th>
+                    <th class="px-4 py-3">Vào ca</th>
+                    <th class="px-4 py-3">Kết thúc</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="a : ${attendances}">
+                    <td class="px-4 py-4" th:text="${a.date}"></td>
+                    <td
+                      class="px-4 py-4"
+                      th:text="${a.clockIn != null ? #temporals.format(a.clockIn,'HH:mm') : '-'}"
+                    ></td>
+                    <td
+                      class="px-4 py-4"
+                      th:text="${a.clockOut != null ? #temporals.format(a.clockOut,'HH:mm') : '-'}"
+                    ></td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(attendances)}">
+                    <td
+                      class="px-4 py-8 text-center text-stone-400"
+                      colspan="3"
+                    >
+                      Chưa có bản ghi.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
