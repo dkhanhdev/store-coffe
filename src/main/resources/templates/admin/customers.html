@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: html_head('Quản lý Khách hàng')}"></head>
+<body class="flex flex-col min-h-screen">
+
+    <div th:replace="~{layout :: header}"></div>
+
+    <div class="flex flex-1">
+        <div th:replace="~{layout :: sidebar(activePage='customers')}"></div>
+
+        <main class="flex-grow p-8 bg-stone-50">
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Title -->
+                <div class="flex justify-between items-center border-b border-stone-200 pb-5">
+                    <div>
+                        <h2 class="text-3xl font-bold font-serif text-stone-900">Bảng Xếp Hạng Khách Hàng Thân Thiết</h2>
+                        <p class="text-sm text-stone-500 mt-1">Theo dõi danh sách khách hàng và tích lũy chi tiêu của họ tại quán.</p>
+                    </div>
+                </div>
+
+                <!-- Search & Status bar -->
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                    <form th:action="@{/admin/customers}" method="get" class="relative w-full md:w-96 flex gap-2">
+                        <div class="relative flex-grow">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                            </span>
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm theo tên hoặc số điện thoại..."
+                                   class="w-full bg-stone-50 border border-stone-200 rounded-lg py-2.5 pl-10 pr-4 text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-xs">
+                        </div>
+                        <button type="submit" class="btn-verona px-5 py-2.5 text-xs uppercase flex items-center justify-center gap-2">
+                            Tìm kiếm
+                        </button>
+                    </form>
+                    
+                    <div class="text-xs text-stone-500">
+                        Tổng cộng: <strong class="text-amber-600 font-bold" th:text="${customers.size()}">0</strong> khách hàng
+                    </div>
+                </div>
+
+                <!-- Customers Leaderboard Table -->
+                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+                        <h3 class="font-bold font-serif text-lg text-stone-900 flex items-center gap-2">
+                            <i class="fa-solid fa-crown text-amber-500"></i> Bảng Vàng Khách Hàng
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-stone-600">
+                            <thead class="text-xs text-stone-400 uppercase bg-stone-50/50 border-b border-stone-200">
+                                <tr>
+                                    <th class="px-6 py-3 text-center w-20">Hạng</th>
+                                    <th class="px-6 py-3">Họ và Tên</th>
+                                    <th class="px-6 py-3">Số điện thoại</th>
+                                    <th class="px-6 py-3 text-right">Tổng chi tiêu ($)</th>
+                                    <th class="px-6 py-3 text-center">Phân hạng VIP</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr th:each="cust, iterStat : ${customers}" class="hover:bg-stone-50/50 transition-colors">
+                                    <!-- Rank with icons for Top 3 -->
+                                    <td class="px-6 py-4 text-center font-bold">
+                                        <span th:if="${iterStat.index == 0}" class="text-amber-500 text-lg"><i class="fa-solid fa-trophy"></i></span>
+                                        <span th:if="${iterStat.index == 1}" class="text-stone-400 text-lg"><i class="fa-solid fa-trophy"></i></span>
+                                        <span th:if="${iterStat.index == 2}" class="text-amber-700 text-lg"><i class="fa-solid fa-trophy"></i></span>
+                                        <span th:if="${iterStat.index > 2}" th:text="${iterStat.index + 1}" class="text-stone-500 font-mono text-xs">4</span>
+                                    </td>
+                                    
+                                    <td class="px-6 py-4 font-semibold text-stone-900" th:text="${cust.name}">Nguyễn Văn A</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-stone-700" th:text="${cust.phoneNumber}">0987654321</td>
+                                    
+                                    <td class="px-6 py-4 text-right font-bold text-amber-600 font-mono" 
+                                        th:text="'$' + ${#numbers.formatDecimal(cust.totalSpent, 1, 2)}">
+                                        $125.00
+                                    </td>
+                                    
+                                    <td class="px-6 py-4 text-center">
+                                        <!-- Platinum/Diamond Tier (>= 100) -->
+                                        <span th:if="${cust.totalSpent >= 100}" 
+                                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-700 border border-amber-500 flex items-center justify-center gap-1 w-28 mx-auto">
+                                            <i class="fa-solid fa-gem"></i> Diamond VIP
+                                        </span>
+                                        <!-- Gold Tier (>= 50 && < 100) -->
+                                        <span th:if="${cust.totalSpent >= 50 && cust.totalSpent < 100}" 
+                                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/20 text-yellow-700 border border-yellow-500 flex items-center justify-center gap-1 w-28 mx-auto">
+                                            <i class="fa-solid fa-medal"></i> Gold VIP
+                                        </span>
+                                        <!-- Silver Tier (>= 20 && < 50) -->
+                                        <span th:if="${cust.totalSpent >= 20 && cust.totalSpent < 50}" 
+                                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-500/20 text-stone-700 border border-stone-400 flex items-center justify-center gap-1 w-28 mx-auto">
+                                            <i class="fa-solid fa-award"></i> Silver Member
+                                        </span>
+                                        <!-- Standard Member (< 20) -->
+                                        <span th:if="${cust.totalSpent < 20}" 
+                                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-600 border border-stone-200 flex items-center justify-center gap-1 w-28 mx-auto">
+                                            <i class="fa-solid fa-user"></i> Member
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(customers)}">
+                                    <td colspan="5" class="text-center py-10 text-stone-400 italic text-sm">
+                                        Không tìm thấy khách hàng nào trong hệ thống.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

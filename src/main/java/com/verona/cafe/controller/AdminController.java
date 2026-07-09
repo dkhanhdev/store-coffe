@@ -1,5 +1,6 @@
 package com.verona.cafe.controller;
 
+import com.verona.cafe.model.Customer;
 import com.verona.cafe.model.Category;
 import com.verona.cafe.model.MenuItem;
 import com.verona.cafe.model.OrderItem;
@@ -10,8 +11,11 @@ import com.verona.cafe.service.MenuService;
 import com.verona.cafe.service.OrderService;
 import com.verona.cafe.service.TableService;
 import com.verona.cafe.service.UserService;
+
 import com.verona.cafe.model.Attendance;
 import com.verona.cafe.service.AttendanceService;
+import com.verona.cafe.repository.CustomerRepository;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +30,29 @@ public class AdminController {
     private final MenuService menuService;
     private final TableService tableService;
     private final UserService userService;
+
     private final AttendanceService attendanceService;
+
+    private final CustomerRepository customerRepository;
+
 
     public AdminController(OrderService orderService,
                            MenuService menuService,
                            TableService tableService,
                            UserService userService,
+
                            AttendanceService attendanceService) {
+=======
+                           CustomerRepository customerRepository) {
+
         this.orderService = orderService;
         this.menuService = menuService;
         this.tableService = tableService;
         this.userService = userService;
+
         this.attendanceService = attendanceService;
+        this.customerRepository = customerRepository;
+
     }
 
     @GetMapping("/dashboard")
@@ -188,6 +203,20 @@ public class AdminController {
     public String deleteStaff(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/staff";
+    }
+
+    @GetMapping("/customers")
+    public String customerManagement(Model model, @RequestParam(required = false) String search) {
+        model.addAttribute("activePage", "customers");
+        List<Customer> customers;
+        if (search != null && !search.isBlank()) {
+            customers = customerRepository.findByNameContainingIgnoreCaseOrPhoneNumberContaining(search, search);
+        } else {
+            customers = customerRepository.findAllByOrderByTotalSpentDesc();
+        }
+        model.addAttribute("customers", customers);
+        model.addAttribute("search", search != null ? search : "");
+        return "admin/customers";
     }
    
 }
